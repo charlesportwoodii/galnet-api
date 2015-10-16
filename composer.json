@@ -1,0 +1,25 @@
+{
+    "name": "charlesportwoodii/galnet-api",
+    "description": "Galnet News Network API (GNNA)",
+    "homepage": "https://galnet.erianna.com",
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "support": {
+        "source": "https://github.com/charlesportwoodii/galnet-api"
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.6.0",
+        "yiisoft/yii2": "~2.0.6",
+		"zelenin/yii2-rss": "*",
+        "paquettg/php-html-parser": "~1.6.4"
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-gii": "*"
+    },
+    "config": {
+        "process-timeout": 1800
+    }
+}
