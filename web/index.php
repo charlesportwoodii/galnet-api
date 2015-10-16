@@ -1,7 +1,4 @@
 <?php
-// Define our application_env variable as provided by nginx/apache
-if (!defined('APPLICATION_ENV'))
-	define('APPLICATION_ENV', 'main');
 
 require __DIR__ . '/../vendor/autoload.php';
 $env = require __DIR__ . '/../config/params.php';
