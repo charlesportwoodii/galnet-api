@@ -30,8 +30,11 @@ $config = [
             'enablePrettyUrl'       => true,
             'rules' => [
                 [
-                    'pattern' => '/news',
-                    'suffix' => '.rss',
+                    'pattern' => '/',
+                    'route' => 'news/index'
+                ],
+                [
+                    'pattern' => '/rss',
                     'route' => 'news/rss'
                 ]
             ]

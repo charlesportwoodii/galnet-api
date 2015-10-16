@@ -18,7 +18,7 @@ For licensing information check the [LICENSE.md](LICENSE.md) file.
 
 ### API Endpoints
 
-All Galnet news entries can be retrieved via the ```/news``` endpoint, which supports pagination via the ```page``` GET parameter. Entries can also be retrieved by Galnet date by specifying the ```date``` GET parameter in ```DD-MMM-YYYY``` format.
+All Galnet news entries can be retrieved via the ```/``` endpoint, which supports pagination via the ```page``` GET parameter. Entries can also be retrieved by Galnet date by specifying the ```date``` GET parameter in ```DD-MMM-YYYY``` format.
 
 Pagination details are provided as response headers in the following format:
 
@@ -31,7 +31,7 @@ x-pagination-total-pages: x
 
 ### RSS Feed
 
-GNA has a built in RSS feed endpoint that supports pagination via the ```page``` GET parameter, and is available at ```/news.rss```
+GNA has a built in RSS feed endpoint that supports pagination via the ```page``` GET parameter, and is available at ```/rss```
 
 ## Developing
 
