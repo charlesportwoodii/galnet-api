@@ -26,11 +26,9 @@ class ResponseEvent extends yii\base\Event
         if ($response->data !== null)
         {
             $data = $response->data;
-            $metadata = isset($data['meta']) ? $data['meta'] : [];
             $data = isset($data['data']) ? $data['data'] : $data;
 
             $response->data = [
-                'meta'  => $metadata,
                 'data'  => $data,
             ];
 

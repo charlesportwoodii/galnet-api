@@ -48,6 +48,9 @@ class NewsController extends \yii\web\Controller
 		$query = News::find()
 			->orderBy('published_at_native desc');
 
+		if (Yii::$app->request->get('date', NULL) !== NULL)
+			$query->andWhere(['published_at_native' => strtotime(Yii::$app->request->get('date', NULL))]);
+
 		return ResponseBuilder::build($query);
 	}
 
