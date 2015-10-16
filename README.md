@@ -1,4 +1,4 @@
-# Galnet News Network API (GNNA)
+# Galnet News API (GNA)
 
 _Your galaxy, in JSON_
 
@@ -8,9 +8,9 @@ _Your galaxy, in JSON_
 [![License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square "License")](https://github.com/charlesportwoodii/galnet-api/blob/master/LICENSE.md)
 [![Yii](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat-square)](http://www.yiiframework.com/)
 
-## What is GNNA
+## What is GNA
 
-GNNA is an API designed to scrape Galnet for content, and present it in a way that it can be _easily_ consumed by third party clients such as native applications or third party websites _without_ needing to scrape Galnet directly.
+GNA is an API designed to scrape Galnet for content, and present it in a way that it can be _easily_ consumed by third party clients such as native applications or third party websites _without_ needing to scrape Galnet directly.
 
 This code has not been created in association with Frontier Developments and is unsupported by them, and may break at any time. Use at your own risk.
 
@@ -31,7 +31,7 @@ x-pagination-total-pages: x
 
 ### RSS Feed
 
-GNNA has a built in RSS feed endpoint that supports pagination via the ```page``` GET parameter, and is available at ```/news.rss```
+GNA has a built in RSS feed endpoint that supports pagination via the ```page``` GET parameter, and is available at ```/news.rss```
 
 ## Developing
 
