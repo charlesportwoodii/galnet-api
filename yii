@@ -11,10 +11,10 @@ require __DIR__ . '/vendor/autoload.php';
 
 $env = require(__DIR__ . '/config/params.php');
 
-defined('YII_DEBUG') or define('YII_DEBUG', $env['debug']);
-defined('YII_ENV') or define('YII_ENV', YII_DEBUG ? 'dev' : 'prod');
-defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
+defined('YII_DEBUG') || define('YII_DEBUG', $env['debug']);
+defined('YII_ENV') || define('YII_ENV', YII_DEBUG ? 'dev' : 'prod');
+defined('STDIN') || define('STDIN', fopen('php://stdin', 'r'));
+defined('STDOUT') || define('STDOUT', fopen('php://stdout', 'w'));
 
 require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 $config = require __DIR__ . '/config/console.php';

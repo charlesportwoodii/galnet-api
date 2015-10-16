@@ -31,7 +31,7 @@ class ImportController extends \yii\console\Controller
 		$year = (int)date('Y') + 1286;
 		if ($to === 'start')
 			$to = Yii::$app->params['galnet']['startDate'];
-		else if ($to == NULL)
+		else if ($to === NULL)
 			$to = date('d-M-' . $year);
 
 		if ($from === NULL)
@@ -50,7 +50,8 @@ class ImportController extends \yii\console\Controller
 
 			$html = $dom->find('h3.galnetNewsArticleTitle a');
 
-			for ($i = 0; $i < count($html); $i++)
+			$count = count($html);
+			for ($i = 0; $i < $count; $i++)
 			{
 				$uri = $html[$i]->getAttribute('href');
 				$uid = str_replace('/galnet/uid/', '', $uri);

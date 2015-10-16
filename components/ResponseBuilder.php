@@ -16,7 +16,7 @@ class ResponseBuilder
 	 * @param array $response
 	 * @return array
 	 */
-	public static function build($query, $response=[])
+	public static function build(yii\db\ActiveQuery $query, $response=[])
 	{
 		$countQuery = clone $query;
 		$count = $countQuery->count();

@@ -81,22 +81,22 @@ class NewsController extends \yii\web\Controller
 	            'description' => 'Galnet News Network API'
 	        ],
 	        'items' => [
-	            'title' => function ($model, $widget) {
+	            'title' => function ($model) {
                     return $model->title;
                 },
-	            'description' => function ($model, $widget) {
+	            'description' => function ($model) {
                     return $model->content;
                 },
-	            'link' => function ($model, $widget) {
+	            'link' => function ($model) {
                     return Yii::$app->params['galnet']['url'] . '/galnet/uid/' . $model->uid;
                 },
-	            'author' => function ($model, $widget) {
+	            'author' => function ($model) {
                     return 'Galnet';
                 },
-	            'guid' => function ($model, $widget) {
+	            'guid' => function ($model) {
                     return $model->uid;
                 },
-	            'pubDate' => function ($model, $widget) {
+	            'pubDate' => function ($model) {
                     $date = new \DateTime;
                     $date->setTimestamp($model->published_at);
                     return $date->format(DATE_RSS);
