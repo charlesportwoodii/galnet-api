@@ -6,7 +6,6 @@ use app\models\News;
 
 use PHPHtmlParser\Dom;
 
-use yii\helpers\HtmlPurifier;
 use yii\helpers\Console;
 use Yii;
 
@@ -66,7 +65,7 @@ class ImportController extends \yii\console\Controller
 	/**
 	 * Imports a specific news entry
 	 * @param PHPHtmlParser\Dom $html
-	 * @return boolean
+	 * @return boolean|null
 	 */
 	private function importNewsEntry($html, $origin)
 	{
