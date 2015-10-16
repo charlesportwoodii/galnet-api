@@ -51,9 +51,9 @@ class ImportController extends \yii\console\Controller
 			$html = $dom->find('h3.galnetNewsArticleTitle a');
 
 			$count = count($html);
-			
+
 			for ($i = 0; $i < $count; $i++)
-				$this->importNewsEntry($html[$i]);
+				$this->importNewsEntry($html[$i], $origin);
 
 			// Exit the loop if we've "today"
 			if ($origin == $from)
@@ -68,7 +68,7 @@ class ImportController extends \yii\console\Controller
 	 * @param PHPHtmlParser\Dom $html
 	 * @return boolean
 	 */
-	private function importNewsEntry($html)
+	private function importNewsEntry($html, $origin)
 	{
 		$dom = new Dom;
 		$uri = $html->getAttribute('href');
