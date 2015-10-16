@@ -12,6 +12,8 @@ _Your galaxy, in JSON_
 
 GNNA is an API designed to scrape Galnet for content, and present it in a way that it can be _easily_ consumed by third party clients such as native applications or third party websites _without_ needing to scrape Galnet directly.
 
+This code has not been created in association with Frontier Developments and is unsupported by them, and may break at any time. Use at your own risk.
+
 For licensing information check the [LICENSE.md](LICENSE.md) file.
 
 ### API Endpoints
