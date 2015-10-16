@@ -51,46 +51,9 @@ class ImportController extends \yii\console\Controller
 			$html = $dom->find('h3.galnetNewsArticleTitle a');
 
 			$count = count($html);
+			
 			for ($i = 0; $i < $count; $i++)
-			{
-				$uri = $html[$i]->getAttribute('href');
-				$uid = str_replace('/galnet/uid/', '', $uri);
-
-				$count = (new \yii\db\Query())
-					->from('news')
-					->where(['uid' => $uid])
-					->count();
-
-				if ((int)$count != 0)
-				{
-					$this->stdOut("    - $uid :: Already Imported...\n");
-					continue;
-				}
-
-				$dom->loadFromUrl(Yii::$app->params['galnet']['url'] . $uri);
-				
-				$title = trim(strip_tags($dom->find('h3.galnetNewsArticleTitle a')[0]->innerHtml));
-				$content = trim(strip_tags(str_replace('<br /><br /> ', "\n", $dom->find('div.article p')[0]->innerHtml)));
-
-				// Early Galnet posts are empty, so grab the first line from the article
-				if (empty($title))
-					$title = strtok($content, "\n");
-
-				$news = new News;
-				$news->attributes = [
-					'uid' => $uid,
-					'title' => $title,
-					'content' => $content,
-					'created_at' => time(),
-					'updated_at' => time(),
-					'published_at_native' => strtotime($origin),
-					'published_at' => strtotime($origin . "-1286 years")
-				];
-
-				$this->stdOut("    - $uid\n");
-				$news->save();
-
-			}
+				$this->importNewsEntry($html[$i]);
 
 			// Exit the loop if we've "today"
 			if ($origin == $from)
@@ -98,5 +61,51 @@ class ImportController extends \yii\console\Controller
 
 			$origin = date('d-M-' . $year, strtotime($origin . '+1 day'));
 		}
-	}	
+	}
+
+	/**
+	 * Imports a specific news entry
+	 * @param PHPHtmlParser\Dom $html
+	 * @return boolean
+	 */
+	private function importNewsEntry($html)
+	{
+		$dom = new Dom;
+		$uri = $html->getAttribute('href');
+		$uid = str_replace('/galnet/uid/', '', $uri);
+
+		$count = (new \yii\db\Query())
+			->from('news')
+			->where(['uid' => $uid])
+			->count();
+
+		if ((int)$count != 0)
+		{
+			$this->stdOut("    - $uid :: Already Imported...\n");
+			return;
+		}
+
+		$dom->loadFromUrl(Yii::$app->params['galnet']['url'] . $uri);
+		
+		$title = trim(strip_tags($dom->find('h3.galnetNewsArticleTitle a')[0]->innerHtml));
+		$content = trim(strip_tags(str_replace('<br /><br /> ', "\n", $dom->find('div.article p')[0]->innerHtml)));
+
+		// Early Galnet posts are empty, so grab the first line from the article
+		if (empty($title))
+			$title = strtok($content, "\n");
+
+		$news = new News;
+		$news->attributes = [
+			'uid' => $uid,
+			'title' => $title,
+			'content' => $content,
+			'created_at' => time(),
+			'updated_at' => time(),
+			'published_at_native' => strtotime($origin),
+			'published_at' => strtotime($origin . "-1286 years")
+		];
+
+		$this->stdOut("    - $uid\n");
+		$news->save();
+	}
 }
