@@ -88,7 +88,7 @@ class NewsController extends \yii\web\Controller
 					return $model->content;
 				},
 				'link' => function($model) {
-					return Yii::$app->params['galnet']['url'] . '/galnet/uid/' . $model->uid;
+					return Yii::$app->params['galnet']['url'] . 'galnet/uid/' . $model->uid;
 				},
 				'author' => function() {
 					return 'Galnet';

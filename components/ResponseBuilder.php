@@ -59,7 +59,7 @@ class ResponseBuilder
 			'content' 					=> $model->content,
 			'published' 				=> $model->published_at,
 			'galnet_publication_time' 	=> $model->published_at_native,
-			'url' 						=> Yii::$app->params['galnet']['url'] . '/galnet/uid/' . $model->uid
+			'url' 						=> Yii::$app->params['galnet']['url'] . 'galnet/uid/' . $model->uid
 		];
 	}
 }
