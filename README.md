@@ -16,6 +16,12 @@ This code has not been created in association with Frontier Developments and is 
 
 For licensing information check the [LICENSE.md](LICENSE.md) file.
 
+## How to get use GNA?
+
+Want to use GNA without setting up yourr own server? You can fetch data from [https://www.galnet.news](https://www.galnet.news).
+
+Current data and usage is available for free.
+
 ### API Endpoints
 
 All Galnet news entries can be retrieved via the ```/``` endpoint, which supports pagination via the ```page``` GET parameter. Entries can also be retrieved by Galnet date by specifying the ```date``` GET parameter in ```DD-MMM-YYYY``` format.
