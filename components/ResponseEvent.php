@@ -25,17 +25,17 @@ class ResponseEvent extends yii\base\Event
 
         if ($response->data !== null)
         {
-            $data = $response->data;
-            $data = isset($data['data']) ? $data['data'] : $data;
+            $return = ($response->statusCode == 200 ? $response->data : $response->data['message']);
 
             $response->data = [
-                'data'  => $data,
+                'data'  => $return
             ];
 
             // Handle and display errors in the API for easy debugging
             $exception = \Yii::$app->errorHandler->exception;
             if ($exception && get_class($exception) !== "yii\web\HttpException" && !is_subclass_of($exception, 'yii\web\HttpException') && YII_DEBUG)
             {
+                $response->data['success'] = false;
                 $response->data['exception'] = [
                     'message'   => $exception->getMessage(),
                     'file'      => $exception->getFile(),
