@@ -17,11 +17,12 @@ class ResponseBuilder
 	 * @param array $response
 	 * @return array
 	 */
-	public static function build(yii\db\ActiveQuery $query, $name, $response=[])
+	public static function build(yii\db\ActiveQuery $query, $name, $order, $response=[])
 	{
 		$countQuery = clone $query;
 		$count = $countQuery->count();
 		$pages = new Pagination(['totalCount' => $count]);
+		$query->orderBy($order);
 		$models = $query->offset($pages->offset)
 			->limit($pages->limit)
 			->all();

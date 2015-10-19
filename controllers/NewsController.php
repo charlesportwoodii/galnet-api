@@ -45,13 +45,12 @@ class NewsController extends \yii\web\Controller
 	 */
 	public function actionIndex()
 	{
-		$query = News::find()
-			->orderBy('published_at_native desc');
+		$query = News::find();
 
 		if (Yii::$app->request->get('date', NULL) !== NULL)
 			$query->andWhere(['published_at_native' => strtotime(Yii::$app->request->get('date', NULL))]);
 
-		return ResponseBuilder::build($query, 'news');
+		return ResponseBuilder::build($query, 'news', 'published_at_native desc');
 	}
 
 	/**

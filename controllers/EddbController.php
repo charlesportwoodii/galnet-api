@@ -44,8 +44,7 @@ class EddbController extends \yii\web\Controller
 	 */
 	public function actionCommodities()
 	{
-		$query = Commodities::find()
-			->orderBy('id desc');
+		$query = Commodities::find();
 
 		if (Yii::$app->request->get('category', false))
 		{
@@ -65,6 +64,6 @@ class EddbController extends \yii\web\Controller
 		if (Yii::$app->request->get('name', false))
 			$query->andWhere(['name' => Inflector::humanize(Yii::$app->request->get('name', 'nothing'))]);
 
-		return ResponseBuilder::build($query, 'commodities');
+		return ResponseBuilder::build($query, 'commodities', 'id desc');
 	}
 }

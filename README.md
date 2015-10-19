@@ -210,13 +210,16 @@ cd galnet-api
 composer install --prefer-dist -ov
 ```
 
-2. Create ```config/db.php```. A example SQLite database connection is shown as follows. If you want to use a different database connection string, reference the [yii\db\Connection](http://www.yiiframework.com/doc-2.0/yii-db-connection.html) class.
+2. Create ```config/db.php```. A example PostgreSQL database connection is shown as follows. If you want to use a different database connection string, reference the [yii\db\Connection](http://www.yiiframework.com/doc-2.0/yii-db-connection.html) class.
 ```
 <?php return [
-	'dsn' => 'sqlite:/' . __DIR__ . '/../runtime/db.sqlite',
-    'class' => 'yii\db\Connection',
-	'charset' => 'utf8'
+	'class' => 'yii\db\Connection',
+    'dsn' => 'pgsql:host=127.0.0.1;port=5432;dbname=gna',
+    'username' => 'gna',
+    'password' => '<password>',
+    'charset' => 'utf8',
 ];
+
 ```
 
 3. Initialize the database
