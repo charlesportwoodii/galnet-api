@@ -45,7 +45,7 @@ class EddbController extends \yii\web\Controller
 	 */
 	public function actionCommodities()
 	{
-		$query = Commodities::find();
+		$query = Commodity::find();
 
 		if (Yii::$app->request->get('category', false))
 		{
@@ -70,7 +70,7 @@ class EddbController extends \yii\web\Controller
 
 	public function actionSystems()
 	{
-		$query = System::find()
+		$query = System::find();
 
 		return ResponseBuilder::build($query, 'systems', 'id asc');
 	}
