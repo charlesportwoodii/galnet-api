@@ -71,4 +71,12 @@ class System extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStations()
+    {
+        return $this->hasMany(Station::className(), ['system_id' => 'id']);
+    }
 }

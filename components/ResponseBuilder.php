@@ -3,7 +3,6 @@
 namespace app\components;
 
 use app\models\News;
-use app\models\Commodities;
 
 use yii\data\Pagination;
 use yii\web\HttpException;
@@ -24,7 +23,18 @@ class ResponseBuilder
 		$pages = new Pagination(['totalCount' => $count]);
 
 		// Re-Add the order by so it doesn't affect the COUNT query
-		$query->orderBy($order);
+		$order = explode(' ', $order);
+		if (!isset($order[1]))
+			$order[1] = 'asc';
+
+		if (!in_array($order[0], array_keys(Yii::$app->db->getTableSchema($name)->columns)))
+			throw new HttpException(400, 'Invalid sort paramter');
+
+		if (!in_array($order[1], ['asc', 'desc']))
+			$order[1] = 'asc';
+
+		$query->orderBy($order[0] . ' ' . $order[1]);
+
 		$models = $query->offset($pages->offset)
 			->limit($pages->limit)
 			->all();
@@ -81,7 +91,10 @@ class ResponseBuilder
 		if ($model === NULL)
 			throw new \yii\base\Exception('Missing model data');
 		
-		return $model->attributes;
+
+		return \yii\helpers\ArrayHelper::merge($model->attributes, [
+			'stations' => $model->stations
+		]);
 	}
 
 	/**

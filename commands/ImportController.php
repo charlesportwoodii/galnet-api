@@ -376,6 +376,10 @@ class ImportController extends \yii\console\Controller
 			$this->stdOut('Importing system: ');
 			$this->stdOut("{$obj[0]['name']}\n", Console::BOLD);
 
+			// Null set the station for consistancy
+			if ($obj[0]['state'] == "None")
+				$obj[0]['state'] = NULL;
+
 			foreach ($obj[0] as $name=>$value)
 			{
 				if ($model->hasAttribute($name))

@@ -13,7 +13,7 @@ use yii\helpers\Inflector;
 
 use Yii;
 
-class EddbController extends \yii\web\Controller
+class CommoditiesController extends \yii\rest\Controller
 {
 	/**
 	 * @internal
@@ -25,8 +25,8 @@ class EddbController extends \yii\web\Controller
 			'verbs' => [
 				'class' => VerbFilter::className(),
 				'actions' => [
-					'commodities'  	=> ['get'],
-					'systems'		=> ['get']
+					'index'  	=> ['get'],
+					'view'  	=> ['get'],
 				],
 			],
 			'corsFilter' => [
@@ -43,7 +43,7 @@ class EddbController extends \yii\web\Controller
 	 * Paginated endpoint for display all commodities from Eddb
 	 * @return array
 	 */
-	public function actionCommodities()
+	public function actionIndex()
 	{
 		$query = Commodity::find();
 
@@ -65,13 +65,20 @@ class EddbController extends \yii\web\Controller
 		if (Yii::$app->request->get('name', false))
 			$query->andWhere(['name' => Inflector::humanize(Yii::$app->request->get('name', 'nothing'))]);
 
-		return ResponseBuilder::build($query, 'commodities', 'id desc');
+		return ResponseBuilder::build($query, 'commodities', Yii::$app->request->get('sort', 'id asc'));
 	}
 
-	public function actionSystems()
+	/**
+	 * Retrieve the details for a specific commodity
+	 * @param integer $id
+	 * @return array
+	 */
+	public function actionView($id=NULL)
 	{
-		$query = System::find();
+		if ($id === NULL)
+			throw new HttpException(400, 'Missing ID parameter');
 
-		return ResponseBuilder::build($query, 'systems', 'id asc');
+		$query = Commodity::find()->where(['id' => $id]);
+		return ResponseBuilder::build($query, 'commodities', 'id asc');
 	}
 }
