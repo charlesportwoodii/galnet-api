@@ -1,7 +1,5 @@
 <?php
 
-namespace app\migrations;
-
 use yii\db\Schema;
 use yii\db\Migration;
 
@@ -26,10 +24,10 @@ class m151016_181742_init extends Migration
 
         $this->createIndex('uid', 'news', 'uid', true);
 
-        if ($this->db->getDriverName() == "sqlite")
-            return;
-        
-        $this->alterColumn('news', 'content', 'MEDIUMTEXT');
+        if ($this->db->getDriverName() == "mysql")
+            $this->alterColumn('news', 'content', 'MEDIUMTEXT');
+        else if ($this->db->getDriverName() == "pgsql")
+            $this->alterColumn('news', 'published_at_native', 'BIGINT');
     }
 
     /**

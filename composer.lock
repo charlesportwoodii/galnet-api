@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6b898f8269caf9ebd8a049bf8aec51ef",
-    "content-hash": "9db185395a042bd61bbbb88b5e03aa9c",
+    "hash": "c7c1e1ae5477e1713399cb426fb8f6a6",
+    "content-hash": "bb96222ef37ac89d724a01d6136a2e84",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -365,7 +365,7 @@
         },
         {
             "name": "php-curl-class/php-curl-class",
-            "version": "dev-master",
+            "version": "4.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-curl-class/php-curl-class.git",
@@ -418,6 +418,72 @@
                 "xml"
             ],
             "time": "2015-10-15 17:07:14"
+        },
+        {
+            "name": "salsify/json-streaming-parser",
+            "version": "v4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/salsify/jsonstreamingparser.git",
+                "reference": "15cea1f918d253eb58a5ec5a2fb3158b698ad20e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/salsify/jsonstreamingparser/zipball/15cea1f918d253eb58a5ec5a2fb3158b698ad20e",
+                "reference": "15cea1f918d253eb58a5ec5a2fb3158b698ad20e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "JsonStreamingParser": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maxim Gnatenko",
+                    "email": "mgnatenko@gmail.com"
+                },
+                {
+                    "name": "Rob Gonzalez",
+                    "email": "rob@salsify.com",
+                    "homepage": "http://salsify.com/"
+                }
+            ],
+            "description": "A streaming parser for JSON in PHP.",
+            "homepage": "https://github.com/salsify/jsonstreamingparser",
+            "keywords": [
+                "json",
+                "parser",
+                "streaming"
+            ],
+            "time": "2015-03-07 19:39:22"
+        },
+        {
+            "name": "soyuka/ObjectListener",
+            "version": "master",
+            "source": {
+                "type": "git",
+                "url": "https://gist.github.com/soyuka/4468eab47aceb6abd1bf.git",
+                "reference": "master"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "ObjectListener.php"
+                ]
+            },
+            "time": "2015-06-16 09:03:35"
         },
         {
             "name": "yiisoft/yii2",
@@ -906,9 +972,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "php-curl-class/php-curl-class": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
