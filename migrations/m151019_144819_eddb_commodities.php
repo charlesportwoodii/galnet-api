@@ -27,7 +27,7 @@ class m151019_144819_eddb_commodities extends Migration
 
     public function safeDown()
     {
-        echo "m151019_144819_eddb_commodities cannot be reverted.\n";
-        return false;
+        $this->dropTable('commodities');
+        $this->dropTable('commodities_categories');
     }
 }

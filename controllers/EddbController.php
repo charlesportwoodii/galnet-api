@@ -3,8 +3,8 @@
 namespace app\controllers;
 
 use app\components\ResponseBuilder;
-use app\models\Commodities;
-use app\models\CommodityCategories;
+use app\models\Commodity;
+use app\models\CommodityCategory;
 
 use yii\web\HttpException;
 use yii\filters\VerbFilter;
@@ -26,6 +26,7 @@ class EddbController extends \yii\web\Controller
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'commodities'  	=> ['get'],
+					'systems'		=> ['get']
 				],
 			],
 			'corsFilter' => [
@@ -44,13 +45,13 @@ class EddbController extends \yii\web\Controller
 	 */
 	public function actionCommodities()
 	{
-		$query = Commodities::find()
-			->orderBy('id desc');
+		$query = Commodity::find()
+			->orderBy('id asc');
 
 		if (Yii::$app->request->get('category', false))
 		{
 			// Find the requested category first
-			$category = CommodityCategories::find()->where([
+			$category = CommodityCategory::find()->where([
 				'name' => Inflector::humanize(Yii::$app->request->get('category', NULL))
 			])->one();
 
@@ -66,5 +67,13 @@ class EddbController extends \yii\web\Controller
 			$query->andWhere(['name' => Inflector::humanize(Yii::$app->request->get('name', 'nothing'))]);
 
 		return ResponseBuilder::build($query, 'commodities');
+	}
+
+	public function actionSystems()
+	{
+		$query = System::find()
+			->orderBy('id asc');
+
+		return ResponseBuilder::build($query, 'systems');
 	}
 }

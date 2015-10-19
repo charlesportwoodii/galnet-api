@@ -24,11 +24,13 @@ class m151019_163258_eddb_systems extends Migration
             'created_at'        => $this->integer(),
             'updated_at'        => $this->integer()
         ]);
+
+        if ($this->db->getDriverName() == "pgsql")
+            $this->alterColumn('systems', 'population', 'BIGINT');
     }
 
     public function safeDown()
     {
-        echo "m151019_163258_eddb_systems cannot be reverted.\n";
-        return false;
+        $this->dropTable('systems');
     }
 }
