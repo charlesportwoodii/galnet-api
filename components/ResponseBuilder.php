@@ -70,6 +70,19 @@ class ResponseBuilder
 	}
 
 	/**
+	 * Returns model safe attributes
+	 * @param app\model\Commodities $model
+	 * @return array
+	 */
+	public static function systems($model=NULL)
+	{
+		if ($model === NULL)
+			throw new \yii\base\Exception('Missing model data');
+		
+		return $model->attributes;
+	}
+
+	/**
 	 * Returns  model safe attributes
 	 * @param app\model\News $model
 	 * @return array

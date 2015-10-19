@@ -2,24 +2,20 @@
 
 namespace app\models;
 
-use app\models\CommodityCategories;
-
 use yii\behaviors\TimestampBehavior;
 use Yii;
 
 /**
- * This is the model class for table "commodities".
+ * This is the model class for table "commodities_categories".
  *
  * @property integer $id
  * @property string $name
- * @property integer $category_id
- * @property integer $average_price
  * @property integer $created_at
  * @property integer $updated_at
  *
- * @property CommodityCategories $category
+ * @property Commodities[] $commodities
  */
-class Commodities extends \yii\db\ActiveRecord
+class CommodityCategory extends \yii\db\ActiveRecord
 {
 
     /**
@@ -37,7 +33,7 @@ class Commodities extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'commodities';
+        return 'commodities_categories';
     }
 
     /**
@@ -46,7 +42,7 @@ class Commodities extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_id', 'average_price', 'created_at', 'updated_at'], 'integer'],
+            [['created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -59,8 +55,6 @@ class Commodities extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'category_id' => 'Category ID',
-            'average_price' => 'Average Price',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -69,8 +63,8 @@ class Commodities extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getCommodities()
     {
-        return $this->hasOne(CommodityCategories::className(), ['id' => 'category_id']);
+        return $this->hasMany(Commodity::className(), ['category_id' => 'id']);
     }
 }

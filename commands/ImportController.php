@@ -3,14 +3,15 @@
 namespace app\commands;
 
 use app\models\News;
-
-use app\models\Commodities;
-use app\models\CommodityCategories;
+use app\models\Commodity;
+use app\models\CommodityCategory;
+use app\models\System;
 
 use PHPHtmlParser\Dom;
 use Curl\Curl;
-
+use JsonStreamingParser\Parser;
 use yii\helpers\Console;
+use yii\helpers\Json;
 use Yii;
 
 /**
@@ -24,7 +25,6 @@ class ImportController extends \yii\console\Controller
 	 * @var string $defaultAction
 	 */
 	public $defaultAction = 'news';
-
 
 	/**
 	 * Imports commodity information from EDDB
@@ -40,23 +40,28 @@ class ImportController extends \yii\console\Controller
 			throw new \yii\base\Exception('Error: ' . $curl->errorCode . ': ' . $curl->errorMessage);
 
 		// Iterate through all the categories via the curl response and insert them into the database
-		foreach ($curl->response as $k=>$obj)
+		foreach ($curl->response as $k => $obj)
 		{
-			$category = CommodityCategories::find()->where(['id' => $obj->category_id])->one();
+			$this->stdOut("Importing: ");
+			$this->stdOut("{$obj->name}\r", Console::BOLD);
+			$category = CommodityCategory::find()->where(['id' => $obj->category_id])->one();
 			if ($category === NULL)
 			{
 				$this->stdOut('Importing new category: ' . $obj->category->name . "\n");
-				$category = new CommodityCategories;
+				$category = new CommodityCategory;
 				$category->id = $obj->category_id;
 			}
+
 			$category->name = $obj->category->name;
 			$category->save();
 
-			$commodity = Commodities::find()->where(['id' => $obj->id])->one();
+			// Import the commodity
+			$commodity = Commodity::find()->where(['id' => $obj->id])->one();
+
 			if ($commodity === NULL)
 			{
 				$this->stdOut('Importing new commodity: ' . $obj->name . "\n");
-				$commodity = new Commodities;
+				$commodity = new Commodity;
 				$commodity->id = $obj->id;
 				$commodity->name = $obj->name;
 			}
@@ -65,6 +70,54 @@ class ImportController extends \yii\console\Controller
 			$commodity->category_id = $obj->category_id;
 			$commodity->save();
 		}
+
+		$this->stdOut("\n\r");
+	}
+
+	/**
+	 * Imports system information from EDDB
+	 */
+	public function actionSystems()
+	{
+		$eddbApi = Yii::$app->params['eddb']['archive'] . 'systems.json';
+
+		$time = date('d-m-y_h');
+		$file = Yii::getAlias('@app') . '/runtime/systems_' . $time . '.json';
+
+		// Download the data from EDDB if the data that we have is out of date
+		if (!file_exists($file))
+		{
+			$this->stdOut('Systems data from EDDB is out of date, fetching RAW JSON from EDDB');
+			$curl = new Curl;
+			$curl = new Curl();
+			$curl->setOpt(CURLOPT_ENCODING , 'gzip');
+			$curl->download($eddbApi, $file);
+		}
+
+		$this->importJsonData($file, 'systems');
+	}
+
+	/**
+	 * Imports stations information from EDDB
+	 */
+	public function actionStations()
+	{
+		$eddbApi = Yii::$app->params['eddb']['archive'] . 'stations.json';
+
+		$time = date('d-m-y_h');
+		$file = Yii::getAlias('@app') . '/runtime/stations' . $time . '.json';
+
+		// Download the data from EDDB if the data that we have is out of date
+		if (!file_exists($file))
+		{
+			$this->stdOut('Systems data from EDDB is out of date, fetching RAW JSON from EDDB');
+			$curl = new Curl;
+			$curl = new Curl();
+			$curl->setOpt(CURLOPT_ENCODING , 'gzip');
+			$curl->download($eddbApi, $file);
+		}
+
+		$this->importJsonData($file, 'stations');
 	}
 
 	/**
@@ -159,5 +212,85 @@ class ImportController extends \yii\console\Controller
 
 		$this->stdOut("    - $uid\n");
 		$news->save();
+	}
+
+	/**
+	 * Imports large JSON object files
+	 * @param string $file
+	 */
+	private function importJsonData($file=NULL, $type=NULL)
+	{
+		if ($type === NULL || $file === NULL)
+			throw new \yii\base\Exception('Missing file or type');
+
+		$stream = fopen($file, 'r');
+		$objectParser = $this->getObjectParser($type);
+		try 
+		{  
+			$parser = (new \JsonStreamingParser_Parser(
+				$stream, 
+				$objectParser
+			))->parse();
+		} catch (Exception $e) {
+			fclose($stream);
+			throw new \yii\base\Exception($e->getMessage());
+		}
+
+		fclose($stream);
+	}
+
+	/**
+	 * The object listener that actually parses the systems JSON Object
+	 * @return ObjectListener
+	 */
+	private function getObjectParser($type)
+	{
+		if ($type === 'systems')
+			$parser = $this->getSystemsObjectParser();
+		else if ($type == 'stations')
+			$parser = $this->getStationsObjectParser();
+		else
+			throw new \yii\base\Exception('Invalid import parser type');
+
+		return (new \ObjectListener(
+			$parser, 
+			function($obj) {})
+		);
+	}
+
+	/**
+	 * The object parser for EDDB stations
+	 * @return function
+	 */
+	private function getStationsObjectParser()
+	{
+		return function($obj) {
+			$this->stdOut('Importing station: ');
+			$this->stdOut("{$obj[0]['name']}\r", Console::BOLD);
+		};
+	}
+	/**
+	 * The object parser for EDDB systems
+	 * @return function
+	 */
+	private function getSystemsObjectParser()
+	{
+		return function($obj) {
+			$this->stdOut('Importing system: ');
+			$this->stdOut("{$obj[0]['name']}\r", Console::BOLD);
+
+			$model = System::find()->where(['id' => $obj[0]['id']])->one();
+
+			if ($model === NULL)
+				$model = new System;
+
+			foreach ($obj[0] as $name=>$value)
+			{
+				if ($model->hasAttribute($name))
+					$model->$name = $value;
+			}
+
+			$model->save();
+		};
 	}
 }
