@@ -10,6 +10,7 @@ use app\models\System;
 use PHPHtmlParser\Dom;
 use Curl\Curl;
 use JsonStreamingParser\Parser;
+
 use yii\helpers\Console;
 use yii\helpers\Json;
 use Yii;
@@ -94,7 +95,14 @@ class ImportController extends \yii\console\Controller
 			$curl->download($eddbApi, $file);
 		}
 
-		$this->importJsonData($file, 'systems');
+		$bench = new \Ubench;
+		$result = $bench->run(function ($file, $type) {
+			$this->importJsonData($file, $type);
+		}, $file, 'systems');
+		
+		$this->stdOut($bench->getTime(false, '%d%s'));
+		$this->stdOut($bench->getMemoryPeak(false, '%.3f%s'));
+		$this->stdOut($bench->getMemoryUsage());
 	}
 
 	/**

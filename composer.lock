@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c7c1e1ae5477e1713399cb426fb8f6a6",
-    "content-hash": "bb96222ef37ac89d724a01d6136a2e84",
+    "hash": "da13f9e8c422648767a88071e64981d5",
+    "content-hash": "e686f27779f56357ede3271e8759c3c6",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -223,6 +223,51 @@
                 "markdown-extra"
             ],
             "time": "2015-03-06 05:28:07"
+        },
+        {
+            "name": "devster/ubench",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/devster/ubench.git",
+                "reference": "4b5c8217b6067b0156fef2cf268523ed0720be95"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/devster/ubench/zipball/4b5c8217b6067b0156fef2cf268523ed0720be95",
+                "reference": "4b5c8217b6067b0156fef2cf268523ed0720be95",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Ubench": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Perret",
+                    "email": "jeremy@devster.org"
+                }
+            ],
+            "description": "Micro PHP library for benchmarking",
+            "homepage": "https://github.com/devster/ubench",
+            "keywords": [
+                "bench",
+                "benchmark",
+                "library",
+                "micro"
+            ],
+            "time": "2015-06-02 08:26:32"
         },
         {
             "name": "ezyang/htmlpurifier",

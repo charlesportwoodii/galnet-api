@@ -33,6 +33,7 @@
         "paquettg/php-html-parser": "~1.6.4",
         "php-curl-class/php-curl-class": "4.8.0",
         "salsify/json-streaming-parser": "v4.0",
+        "devster/ubench": "~1.2.0",
         "soyuka/ObjectListener": "*"
     },
     "require-dev": {
