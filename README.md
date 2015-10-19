@@ -204,7 +204,6 @@ GET /commodities?category=Salvage
 ## Developing
 
 1. Clone the repository and install the necessary composer dependencies:
-
 ```
 git clone git@github.com:charlesportwoodii/galnet-api
 cd galnet-api
@@ -212,7 +211,6 @@ composer install --prefer-dist -ov
 ```
 
 2. Create ```config/db.php```. A example SQLite database connection is shown as follows. If you want to use a different database connection string, reference the [yii\db\Connection](http://www.yiiframework.com/doc-2.0/yii-db-connection.html) class.
-
 ```
 <?php return [
 	'dsn' => 'sqlite:/' . __DIR__ . '/../runtime/db.sqlite',
@@ -222,19 +220,32 @@ composer install --prefer-dist -ov
 ```
 
 3. Initialize the database
-
 ```
 ./yii migrate/up --interactive=0
 ```
 
 4. Import data from Galnet
-
 ```
 ./yii import
 ```
 
-### Commands
+5. Import data from other sources
+```
+# View available commands
+./yii help import
+./yii import/<command>
+```
 
+### Importing Commands
+
+A full list of available commands can be found by running:
+
+```
+# View available commands
+./yii help import
+```
+
+#### Import Galnet News
 By default, the ```import``` command will just import data for _today_. If you want to import data from a specific range supply the Galnet dates. For example, the following command will import everything between October 16th 2015 and October 21st 2015.
 
 ```
@@ -245,6 +256,14 @@ Alternativly, you can import everything by passing ```start``` as the first argu
 
 ```
 ./yii import start
+```
+
+#### Import EDDB Commodities
+
+Commodity information is fetched from EDDB's data archives. As this data only updates once a day, you should only fetch it once a day.
+
+```
+./yii import commodities
 ```
 
 ### Contributing
