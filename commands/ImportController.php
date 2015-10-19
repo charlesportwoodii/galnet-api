@@ -31,7 +31,6 @@ class ImportController extends \yii\console\Controller
 	 */
 	public function actionCommodities()
 	{
-		$db = Yii::$app->db;
 		$eddbApi = Yii::$app->params['eddb']['archive'] . 'commodities.json';
 
 		$curl = new Curl;
