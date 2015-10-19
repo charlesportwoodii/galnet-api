@@ -25,7 +25,6 @@ class ImportController extends \yii\console\Controller
 	 */
 	public $defaultAction = 'news';
 
-
 	/**
 	 * Imports commodity information from EDDB
 	 */
