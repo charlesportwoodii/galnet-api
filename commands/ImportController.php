@@ -96,7 +96,7 @@ class ImportController extends \yii\console\Controller
 		}
 
 		$bench = new \Ubench;
-		$result = $bench->run(function ($file, $type) {
+		$result = $bench->run(function($file, $type) {
 			$this->importJsonData($file, $type);
 		}, $file, 'systems');
 		
@@ -262,7 +262,7 @@ class ImportController extends \yii\console\Controller
 
 		return (new \ObjectListener(
 			$parser, 
-			function($obj) {})
+			function() {})
 		);
 	}
 
@@ -274,7 +274,7 @@ class ImportController extends \yii\console\Controller
 	{
 		return function($obj) {
 			$this->stdOut('Importing station: ');
-			$this->stdOut("{$obj[0]['name']}\r", Console::BOLD);
+			$this->stdOut("{$obj[0]['name']}\n", Console::BOLD);
 		};
 	}
 	/**
@@ -285,12 +285,21 @@ class ImportController extends \yii\console\Controller
 	{
 		return function($obj) {
 			$this->stdOut('Importing system: ');
-			$this->stdOut("{$obj[0]['name']}\r", Console::BOLD);
+			$this->stdOut("{$obj[0]['name']}\n", Console::BOLD);
+
+			// Remove attributes we don't want to be applied
+			unset($obj[0]['updated_at']);
 
 			$model = System::find()->where(['id' => $obj[0]['id']])->one();
 
 			if ($model === NULL)
 				$model = new System;
+			else if (($model->updated_at + 43200) >= time())
+			{
+				// If the model is less than 12 hours old, skip it.
+				return;
+			}
+
 
 			foreach ($obj[0] as $name=>$value)
 			{
