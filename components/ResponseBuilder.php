@@ -22,6 +22,8 @@ class ResponseBuilder
 		$countQuery = clone $query;
 		$count = $countQuery->count();
 		$pages = new Pagination(['totalCount' => $count]);
+
+		// Re-Add the order by so it doesn't affect the COUNT query
 		$query->orderBy($order);
 		$models = $query->offset($pages->offset)
 			->limit($pages->limit)
@@ -29,7 +31,7 @@ class ResponseBuilder
 		
 		$page = $pages->page+1;
 		if ($page < Yii::$app->request->get('page'))
-			throw new HttpException(404, 'There are no builds for ' . $name . ': ' . Yii::$app->request->get('page'));
+			throw new HttpException(404);
 
 		if (!method_exists(get_class(), $name))
 			throw new HttpException(400, 'Invalid request');
