@@ -29,6 +29,8 @@ $config = [
             'enableStrictParsing'   => false,
             'enablePrettyUrl'       => true,
             'rules' => [
+
+                // Galnet News
                 [
                     'pattern' => '/',
                     'route' => 'news/index'
@@ -36,7 +38,13 @@ $config = [
                 [
                     'pattern' => '/rss',
                     'route' => 'news/rss'
-                ]
+                ],
+
+                // EDDB
+                [
+                    'pattern' => '/commodities',
+                    'route' => 'eddb/commodities'
+                ],
             ]
         ],
         'log' => [

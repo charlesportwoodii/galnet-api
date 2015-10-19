@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "677f04aee96cab0623cf33feb8da108f",
-    "content-hash": "97e1906992e8e81c718f097f6e223788",
+    "hash": "6b898f8269caf9ebd8a049bf8aec51ef",
+    "content-hash": "9db185395a042bd61bbbb88b5e03aa9c",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -362,6 +362,62 @@
                 "string"
             ],
             "time": "2013-12-13 15:26:20"
+        },
+        {
+            "name": "php-curl-class/php-curl-class",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-curl-class/php-curl-class.git",
+                "reference": "d49186ae308fe6e871ae2efbeb9f070ef57debb6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-curl-class/php-curl-class/zipball/d49186ae308fe6e871ae2efbeb9f070ef57debb6",
+                "reference": "d49186ae308fe6e871ae2efbeb9f070ef57debb6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Curl\\": "src/Curl/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Unlicense"
+            ],
+            "authors": [
+                {
+                    "name": "Zach Borboa"
+                }
+            ],
+            "description": "PHP Curl Class is an object-oriented wrapper of the PHP cURL extension.",
+            "homepage": "https://github.com/php-curl-class/php-curl-class",
+            "keywords": [
+                "api",
+                "class",
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "json",
+                "php",
+                "requests",
+                "rest",
+                "restful",
+                "web service",
+                "xml"
+            ],
+            "time": "2015-10-15 17:07:14"
         },
         {
             "name": "yiisoft/yii2",
@@ -850,7 +906,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "php-curl-class/php-curl-class": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

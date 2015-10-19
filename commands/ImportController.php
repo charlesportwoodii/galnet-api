@@ -4,7 +4,11 @@ namespace app\commands;
 
 use app\models\News;
 
+use app\models\Commodities;
+use app\models\CommodityCategories;
+
 use PHPHtmlParser\Dom;
+use Curl\Curl;
 
 use yii\helpers\Console;
 use Yii;
@@ -14,6 +18,56 @@ use Yii;
  */
 class ImportController extends \yii\console\Controller
 {
+
+	/**
+	 * Set the default action for the controller
+	 * @var string $defaultAction
+	 */
+	public $defaultAction = 'news';
+
+
+	/**
+	 * Imports commodity information from EDDB
+	 */
+	public function actionCommodities()
+	{
+		$db = Yii::$app->db;
+		$eddbApi = Yii::$app->params['eddb']['archive'] . 'commodities.json';
+
+		$curl = new Curl;
+		$curl->get($eddbApi);
+
+		if ($curl->error)
+			throw new \yii\base\Exception('Error: ' . $curl->errorCode . ': ' . $curl->errorMessage);
+
+		// Iterate through all the categories via the curl response and insert them into the database
+		foreach ($curl->response as $k=>$obj)
+		{
+			$category = CommodityCategories::find()->where(['id' => $obj->category_id])->one();
+			if ($category === NULL)
+			{
+				$this->stdOut('Importing new category: ' . $obj->category->name . "\n");
+				$category = new CommodityCategories;
+				$category->id = $obj->category_id;
+			}
+			$category->name = $obj->category->name;
+			$category->save();
+
+			$commodity = Commodities::find()->where(['id' => $obj->id])->one();
+			if ($commodity === NULL)
+			{
+				$this->stdOut('Importing new commodity: ' . $obj->name . "\n");
+				$commodity = new Commodities;
+				$commodity->id = $obj->id;
+				$commodity->name = $obj->name;
+			}
+
+			$commodity->average_price = $obj->average_price;
+			$commodity->category_id = $obj->category_id;
+			$commodity->save();
+		}
+	}
+
 	/**
 	 * Imports data from Galnet Community website
 	 *
@@ -25,7 +79,7 @@ class ImportController extends \yii\console\Controller
 	 * @param string $from 	When to end date
 	 * @return void
 	 */
-	public function actionIndex($to=NULL, $from=NULL)
+	public function actionNews($to=NULL, $from=NULL)
 	{
 		$year = (int)date('Y') + 1286;
 		if ($to === 'start')

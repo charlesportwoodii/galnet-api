@@ -3,6 +3,7 @@
 namespace app\components;
 
 use app\models\News;
+use app\models\Commodities;
 
 use yii\data\Pagination;
 use yii\web\HttpException;
@@ -16,7 +17,7 @@ class ResponseBuilder
 	 * @param array $response
 	 * @return array
 	 */
-	public static function build(yii\db\ActiveQuery $query, $response=[])
+	public static function build(yii\db\ActiveQuery $query, $name, $response=[])
 	{
 		$countQuery = clone $query;
 		$count = $countQuery->count();
@@ -27,7 +28,10 @@ class ResponseBuilder
 		
 		$page = $pages->page+1;
 		if ($page < Yii::$app->request->get('page'))
-			throw new HttpException(404, 'There are no builds for page: ' . Yii::$app->request->get('page'));
+			throw new HttpException(404, 'There are no builds for ' . $name . ': ' . Yii::$app->request->get('page'));
+
+		if (!method_exists(get_class(), $name))
+			throw new HttpException(400, 'Invalid request');
 
 		// Set some useful pagination headers
 		$headers = Yii::$app->response->headers;
@@ -38,17 +42,38 @@ class ResponseBuilder
 		$headers->set('X-Pagination-Total-Entries', $count);
 
 		foreach ($models as $model)
-			$response[] = self::getBuildAttributes($model);
+			$response[] = self::$name($model);
 			
 		return $response;
 	}
 	
 	/**
-	 * Returns  model safe attributes
-	 * @param app\model\Build $model
+	 * Returns model safe attributes
+	 * @param app\model\Commodities $model
 	 * @return array
 	 */
-	public static function getBuildAttributes($model=NULL)
+	public static function commodities($model=NULL)
+	{
+		if ($model === NULL)
+			throw new \yii\base\Exception('Missing model data');
+		
+		return [
+			'id'			=> $model->id,
+			'name'			=> $model->name,
+			'average_price' => $model->average_price,
+			'category' 		=> [
+				'id'   => $model->category->id,
+				'name' => $model->category->name
+			]
+		];
+	}
+
+	/**
+	 * Returns  model safe attributes
+	 * @param app\model\News $model
+	 * @return array
+	 */
+	public static function news($model=NULL)
 	{
 		if ($model === NULL)
 			throw new \yii\base\Exception('Missing model data');

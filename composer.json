@@ -13,7 +13,8 @@
         "php": ">=5.6.0",
         "yiisoft/yii2": "~2.0.6",
 		"zelenin/yii2-rss": "*",
-        "paquettg/php-html-parser": "~1.6.4"
+        "paquettg/php-html-parser": "~1.6.4",
+        "php-curl-class/php-curl-class": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
