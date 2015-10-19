@@ -17,7 +17,6 @@ use Yii;
  */
 class CommodityCategory extends \yii\db\ActiveRecord
 {
-
     /**
      * @inheritdoc
      */

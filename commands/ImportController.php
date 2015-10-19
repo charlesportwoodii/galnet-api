@@ -6,6 +6,13 @@ use app\models\News;
 use app\models\Commodity;
 use app\models\CommodityCategory;
 use app\models\System;
+use app\models\Station;
+
+use app\models\StationEconomy;
+use app\models\StationCommodity;
+use app\models\StationExportCommodity;
+use app\models\StationImportCommodity;
+use app\models\StationProhibitedCommodity;
 
 use PHPHtmlParser\Dom;
 use Curl\Curl;
@@ -100,9 +107,10 @@ class ImportController extends \yii\console\Controller
 			$this->importJsonData($file, $type);
 		}, $file, 'systems');
 		
-		$this->stdOut($bench->getTime(false, '%d%s'));
-		$this->stdOut($bench->getMemoryPeak(false, '%.3f%s'));
-		$this->stdOut($bench->getMemoryUsage());
+		$this->stdOut("Systems import completed\n");
+		$this->stdOut($bench->getTime(false, '%d%s') . "\n");
+		$this->stdOut($bench->getMemoryPeak(false, '%.3f%s') . "\n");
+		$this->stdOut($bench->getMemoryUsage() . "\n");
 	}
 
 	/**
@@ -125,7 +133,15 @@ class ImportController extends \yii\console\Controller
 			$curl->download($eddbApi, $file);
 		}
 
-		$this->importJsonData($file, 'stations');
+		$bench = new \Ubench;
+		$result = $bench->run(function($file, $type) {
+			$this->importJsonData($file, $type);
+		}, $file, 'stations');
+		
+		$this->stdOut("Systems import completed\n");
+		$this->stdOut($bench->getTime(false, '%d%s') . "\n");
+		$this->stdOut($bench->getMemoryPeak(false, '%.3f%s') . "\n");
+		$this->stdOut($bench->getMemoryUsage() . "\n");
 	}
 
 	/**
@@ -273,10 +289,69 @@ class ImportController extends \yii\console\Controller
 	private function getStationsObjectParser()
 	{
 		return function($obj) {
+			// Remove keys we don't want, and extract them as variables to the symbols table
+			$exportKeys = ['economies', 'listings', 'import_commodities', 'export_commodities', 'prohibited_commodities', 'updated_at'];
+			foreach ($exportKeys as $key)
+			{
+				$$key = $obj[0][$key];
+				unset($obj[0][$key]);
+			}
+
+			$model = Station::find()->where(['id' => $obj[0]['id']])->one();
+
+			if ($model === NULL)
+				$model = new Station;
+			else if (($model->updated_at + 43200) >= time())
+			{
+				// If the model is less than 12 hours old, skip it.
+				$this->stdOut('.');
+				return;
+			}
+
 			$this->stdOut('Importing station: ');
 			$this->stdOut("{$obj[0]['name']}\n", Console::BOLD);
+
+			// Update the stations listing
+			foreach ($obj[0] as $name=>$value)
+			{
+				if ($model->hasAttribute($name))
+					$model->$name = $value;
+			}
+
+			$model->save();
+
+			$db = Yii::$app->db;
+
+			// Update the economies listing
+			$db->createCommand('DELETE FROM station_economies WHERE station_id = :station_id')
+			   ->bindValue(':station_id', $obj[0]['id'])
+			   ->execute();
+
+			foreach ($economies as $economy)
+			{
+				$model = new StationEconomy;
+				$model->attributes = [
+					'station_id' 	=> $obj[0]['id'],
+					'name' 			=> $economy
+				];
+
+				$model->save();
+			}
+
+			$this->stdOut("    - Commodities\n");
+			$this->importStationCommodity($obj[0], 'commodities', new StationCommodity, $listings);
+
+			$this->stdOut("    - Import Commodities\n");
+			$this->importStationCommodity($obj[0], 'import_commodities', new StationImportCommodity, $import_commodities);
+
+			$this->stdOut("    - Export Commodities\n");
+			$this->importStationCommodity($obj[0], 'export_commodities', new StationExportCommodity, $export_commodities);
+
+			$this->stdOut("    - ProhibitedCommodities\n");
+			$this->importStationCommodity($obj[0], 'prohibited_commodities', new StationProhibitedCommodity, $prohibited_commodities);
 		};
 	}
+
 	/**
 	 * The object parser for EDDB systems
 	 * @return function
@@ -284,9 +359,6 @@ class ImportController extends \yii\console\Controller
 	private function getSystemsObjectParser()
 	{
 		return function($obj) {
-			$this->stdOut('Importing system: ');
-			$this->stdOut("{$obj[0]['name']}\n", Console::BOLD);
-
 			// Remove attributes we don't want to be applied
 			unset($obj[0]['updated_at']);
 
@@ -297,9 +369,12 @@ class ImportController extends \yii\console\Controller
 			else if (($model->updated_at + 43200) >= time())
 			{
 				// If the model is less than 12 hours old, skip it.
+				$this->stdOut('.');
 				return;
 			}
 
+			$this->stdOut('Importing system: ');
+			$this->stdOut("{$obj[0]['name']}\n", Console::BOLD);
 
 			foreach ($obj[0] as $name=>$value)
 			{
@@ -309,5 +384,35 @@ class ImportController extends \yii\console\Controller
 
 			$model->save();
 		};
+	}
+
+	/**
+	 * Import station commodities information
+	 * @param array $station
+	 * @param string $class
+	 * @param array $data
+	 * @return boolean
+	 */
+	private function importStationCommodity($station, $class, $model, $data)
+	{
+		Yii::$app->db->createCommand('DELETE FROM station_' . $class . ' WHERE station_id = :station_id')
+		   ->bindValue(':station_id', $station['id'])
+		   ->execute();
+
+		foreach ($data as $commodity)
+		{
+			$commodity = Commodity::find()->where(['name' => $commodity])->one();
+			if ($commodity !== NULL)
+			{
+				$model->attributes = [
+					'station_id' 	=> $station['id'],
+					'commodity_id'	=> $commodity->id
+				];
+
+				return $model->save();
+			}
+			else
+				Yii::warning("{$station['id']}::{$station['name']} - Couldn't find commodity {$commodity}", __METHOD__);
+		}
 	}
 }

@@ -2,24 +2,20 @@
 
 namespace app\models;
 
-use app\models\CommodityCategory;
-
 use yii\behaviors\TimestampBehavior;
 use Yii;
 
 /**
- * This is the model class for table "commodities".
+ * This is the model class for table "station_economies".
  *
- * @property integer $id
+ * @property integer $station_id
  * @property string $name
- * @property integer $category_id
- * @property integer $average_price
  * @property integer $created_at
  * @property integer $updated_at
  *
- * @property CommodityCategory $category
+ * @property Stations $station
  */
-class Commodity extends \yii\db\ActiveRecord
+class StationEconomy extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -30,13 +26,13 @@ class Commodity extends \yii\db\ActiveRecord
             TimestampBehavior::className(),
         ];
     }
-
+    
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'commodities';
+        return 'station_economies';
     }
 
     /**
@@ -45,8 +41,9 @@ class Commodity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_id', 'average_price', 'created_at', 'updated_at'], 'integer'],
-            [['name'], 'string', 'max' => 255]
+            [['station_id', 'created_at', 'updated_at'], 'integer'],
+            [['name'], 'string', 'max' => 255],
+            [['station_id', 'name'], 'unique', 'targetAttribute' => ['station_id', 'name'], 'message' => 'The combination of Station ID and Name has already been taken.']
         ];
     }
 
@@ -56,10 +53,8 @@ class Commodity extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'station_id' => 'Station ID',
             'name' => 'Name',
-            'category_id' => 'Category ID',
-            'average_price' => 'Average Price',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -68,8 +63,8 @@ class Commodity extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getStation()
     {
-        return $this->hasOne(CommodityCategory::className(), ['id' => 'category_id']);
+        return $this->hasOne(Stations::className(), ['id' => 'station_id']);
     }
 }
