@@ -151,11 +151,11 @@ class Station extends \yii\db\ActiveRecord
         $query->andFilterWhere(['like', 'faction', $this->faction]);
 
         // Add in soem additional filtering
-        if (!isset($params['System']['starDistanceMap']))
-            $params['System']['starDistanceMap'] = '=';
+        if (!isset($params['Station']['starDistanceMap']))
+            $params['Station']['starDistanceMap'] = '=';
 
-        if (isset($params['System']['distance_to_star']) && in_array($params['System']['starDistanceMap'], ['>', '>=', '=', '<', '<=']))
-            $query->andFilterWhere([$params['System']['starDistanceMap'], 'distance_to_star', $this->distance_to_star]);
+        if (isset($params['Station']['distance_to_star']) && in_array($params['Station']['starDistanceMap'], ['>', '>=', '=', '<', '<=']))
+            $query->andFilterWhere([$params['Station']['starDistanceMap'], 'distance_to_star', $this->distance_to_star]);
 
         return $query;
     }
