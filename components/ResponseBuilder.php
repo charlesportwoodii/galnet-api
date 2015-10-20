@@ -83,7 +83,7 @@ class ResponseBuilder
 
 	/**
 	 * Returns model safe attributes
-	 * @param app\model\Commodities $model
+	 * @param app\model\System $model
 	 * @return array
 	 */
 	public static function systems($model=NULL)
@@ -94,10 +94,79 @@ class ResponseBuilder
 		$stations = $model->stations;
 		foreach ($stations as $k=>$v)
 			unset($stations[$k]['system_id']);
-		
+
 		return \yii\helpers\ArrayHelper::merge($model->attributes, [
 			'stations' => $stations
 		]);
+	}
+
+	/**
+	 * Returns model safe attributes
+	 * @param app\model\Station $model
+	 * @return array
+	 */
+	public static function stations($model=NULL)
+	{
+		if ($model === NULL)
+			throw new \yii\base\Exception('Missing model data');
+		
+		$attributes = $model->attributes;
+		unset($attributes['system_id']);
+
+		$modelClass = get_class($model);
+		$neighbors = $modelClass::find()
+			->select(['id', 'name', 'distance_to_star'])
+			->where(['system_id' => $model->system_id])
+			->andWhere('id !=' . $model->id)
+			->all();
+
+
+		foreach ($model->stationEconomies as $m)
+			$economies[] = $m->name;
+
+		$commodities = $model->commodities;
+		return \yii\helpers\ArrayHelper::merge($attributes, [
+			'system' 		=> $model->system,
+			'economies' 	=> $economies,
+			'commodities' 	=> [
+				'listings' 		=> self::getCommoditiesClean($commodities, 'listings'),
+				'imports' 		=> self::getCommoditiesClean($commodities, 'import_commodities'),
+				'exports' 		=> self::getCommoditiesClean($commodities, 'export_commodities'),
+				'prohibitied' 	=> self::getCommoditiesClean($commodities, 'prohibited_commodities')
+			],
+			'neighbors' => $neighbors
+		]);
+	}
+
+	/**
+	 * Retrieves a clean listing of commodities
+	 * @param app\model\StationCommodity
+	 * @param array $response
+	 * @return array
+	 */
+	public static function getCommoditiesClean($model, $type, $response=[])
+	{
+		foreach ($model as $m)
+		{
+			if ($m->type == $type)
+			{
+				$data = [
+					'commodity_id' => $m->commodity_id,
+					'name'			=> $m->commodity->name,
+				];
+
+				if ($type == 'listings')
+				{
+					$data['supply'] = $m->supply;
+					$data['demand'] = $m->demand;
+					$data['buy_price'] = $m->buy_price;
+					$data['sell_price'] = $m->sell_price;
+				}
+				$response[] = $data;
+			}
+		}
+
+		return $response;
 	}
 
 	/**

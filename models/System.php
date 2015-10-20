@@ -97,13 +97,13 @@ class System extends \yii\db\ActiveRecord
             'id'                => $this->id,
             'state'             => $this->state,
             'security'          => $this->security,
-            'needs_permit'      => $this->needs_permit
+            'needs_permit'      => $this->needs_permit,
+            'government'        => $this->government,
+            'allegiance'        => $this->allegiance,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
         $query->andFilterWhere(['like', 'faction', $this->faction]);
-        $query->andFilterWhere(['like', 'government', $this->government]);
-        $query->andFilterWhere(['like', 'allegiance', $this->allegiance]);
         $query->andFilterWhere(['like', 'primary_economy', $this->primary_economy]);
 
         // Add in soem additional filtering

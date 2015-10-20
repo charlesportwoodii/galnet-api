@@ -300,6 +300,8 @@ To see information for a specific system, request that system directly using it'
 ```
 GET /systems/100
 ```
+
+> Note: the systems endpoint does not show all information for a station. To view more information about a station, request that station directly
 ----------------------
 
 ## Developing

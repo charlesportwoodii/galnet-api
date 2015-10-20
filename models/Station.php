@@ -98,9 +98,9 @@ class Station extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStationCommodities()
+    public function getCommodities()
     {
-        return $this->hasMany(StationCommodities::className(), ['station_id' => 'id']);
+        return $this->hasMany(StationCommodity::className(), ['station_id' => 'id']);
     }
 
     /**
@@ -108,31 +108,7 @@ class Station extends \yii\db\ActiveRecord
      */
     public function getStationEconomies()
     {
-        return $this->hasMany(StationEconomies::className(), ['station_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStationExportCommodities()
-    {
-        return $this->hasMany(StationExportCommodities::className(), ['station_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStationImportCommodities()
-    {
-        return $this->hasMany(StationImportCommodities::className(), ['station_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStationProhibitedCommodities()
-    {
-        return $this->hasMany(StationProhibitedCommodities::className(), ['station_id' => 'id']);
+        return $this->hasMany(StationEconomy::className(), ['station_id' => 'id']);
     }
 
     /**
@@ -140,6 +116,47 @@ class Station extends \yii\db\ActiveRecord
      */
     public function getSystem()
     {
-        return $this->hasOne(Systems::className(), ['id' => 'system_id']);
+        return $this->hasOne(System::className(), ['id' => 'system_id']);
+    }
+
+    /**
+     * Search method for filtering by multiple attributes
+     * @param array $params
+     * @return yii\db\Query
+     */
+    public function search($params=[])
+    {
+        unset($params['sort']);
+        $query = self::find();
+
+        if (!($this->load($params) && $this->validate()))
+            throw new \yii\web\HttpException(400, 'Invalid request parameters');
+
+        $query->andFilterWhere([
+            'id'                    => $this->id,
+            'has_shipyard'          => $this->has_shipyard,
+            'has_outfitting'        => $this->has_outfitting,
+            'has_rearm'             => $this->has_rearm,
+            'has_repair'            => $this->has_repair,
+            'has_refuel'            => $this->has_refuel,
+            'has_commodities'       => $this->has_commodities,
+            'type'                  => $this->type,
+            'state'                 => $this->state,
+            'max_landing_pad_size'  => $this->max_landing_pad_size,
+            'government'            => $this->government,
+            'allegiance'            => $this->allegiance,
+        ]);
+
+        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'faction', $this->faction]);
+
+        // Add in soem additional filtering
+        if (!isset($params['System']['starDistanceMap']))
+            $params['System']['starDistanceMap'] = '=';
+
+        if (isset($params['System']['distance_to_star']) && in_array($params['System']['starDistanceMap'], ['>', '>=', '=', '<', '<=']))
+            $query->andFilterWhere([$params['System']['starDistanceMap'], 'distance_to_star', $this->distance_to_star]);
+
+        return $query;
     }
 }

@@ -65,6 +65,6 @@ class StationEconomy extends \yii\db\ActiveRecord
      */
     public function getStation()
     {
-        return $this->hasOne(Stations::className(), ['id' => 'station_id']);
+        return $this->hasOne(Station::className(), ['id' => 'station_id']);
     }
 }

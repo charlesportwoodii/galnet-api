@@ -31,16 +31,18 @@ class m151019_195524_eddb_stations extends Migration
         ]);
 
         $this->createTable('station_commodities', [
+            'id'            => $this->primaryKey(),
             'station_id'    => $this->integer(),
             'commodity_id'  => $this->integer(),
             'supply'        => $this->integer(),
             'buy_price'     => $this->integer(),
             'sell_price'    => $this->integer(),
             'demand'        => $this->integer(),
-            'collected_At'  => $this->integer(),
+            'collected_at'  => $this->integer(),
             'update_count'  => $this->integer(),
             'created_at'    => $this->integer(),
-            'updated_at'    => $this->integer(),  
+            'updated_at'    => $this->integer(),
+            'type'          => $this->string(),
             'FOREIGN KEY(station_id) REFERENCES stations(id)',
             'FOREIGN KEY(commodity_id) REFERENCES commodities(id)'
         ]);
@@ -48,6 +50,7 @@ class m151019_195524_eddb_stations extends Migration
         $this->createIndex('station_commodities_uk', 'station_commodities', 'station_id, commodity_id', true);
 
         $this->createTable('station_economies', [
+            'id'            => $this->primaryKey(),
             'station_id'    => $this->integer(),
             'name'          => $this->string(),
             'created_at'    => $this->integer(),
@@ -56,46 +59,10 @@ class m151019_195524_eddb_stations extends Migration
         ]);
 
         $this->createIndex('station_economies_uk', 'station_economies', 'station_id, name', true);
-
-        $this->createTable('station_import_commodities', [
-            'station_id'    => $this->integer(),
-            'commodity_id'  => $this->integer(),
-            'created_at'    => $this->integer(),
-            'updated_at'    => $this->integer(), 
-            'FOREIGN KEY(station_id) REFERENCES stations(id)',
-            'FOREIGN KEY(commodity_id) REFERENCES commodities(id)'
-        ]);
-
-        $this->createIndex('station_import_commodities_uk', 'station_import_commodities', 'station_id, commodity_id', true);
-
-        $this->createTable('station_export_commodities', [
-            'station_id'    => $this->integer(),
-            'commodity_id'  => $this->integer(),
-            'created_at'    => $this->integer(),
-            'updated_at'    => $this->integer(), 
-            'FOREIGN KEY(station_id) REFERENCES stations(id)',
-            'FOREIGN KEY(commodity_id) REFERENCES commodities(id)'
-        ]);
-
-        $this->createIndex('station_export_commodities_uk', 'station_export_commodities', 'station_id, commodity_id', true);
-
-        $this->createTable('station_prohibited_commodities', [
-            'station_id'    => $this->integer(),
-            'commodity_id'  => $this->integer(),
-            'created_at'    => $this->integer(),
-            'updated_at'    => $this->integer(), 
-            'FOREIGN KEY(station_id) REFERENCES stations(id)',
-            'FOREIGN KEY(commodity_id) REFERENCES commodities(id)'
-        ]);
-
-        $this->createIndex('station_prohibited_commodities_uk', 'station_prohibited_commodities', 'station_id, commodity_id', true);
     }
 
     public function safeDown()
     {
-        $this->dropTable('station_import_commodities');
-        $this->dropTable('station_export_commodities');
-        $this->dropTable('station_prohibited_commodities');
         $this->dropTable('station_economies');
         $this->dropTable('station_commodities');
         $this->dropTable('stations');

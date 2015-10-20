@@ -48,7 +48,8 @@ class StationCommodity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['station_id', 'commodity_id', 'supply', 'buy_price', 'sell_price', 'demand', 'collected_At', 'update_count', 'created_at', 'updated_at'], 'integer'],
+            [['station_id', 'commodity_id', 'supply', 'buy_price', 'sell_price', 'demand', 'collected_at', 'update_count', 'created_at', 'updated_at'], 'integer'],
+            [['type'], 'string'],
             [['station_id', 'commodity_id'], 'unique', 'targetAttribute' => ['station_id', 'commodity_id'], 'message' => 'The combination of Station ID and Commodity ID has already been taken.']
         ];
     }
@@ -65,7 +66,7 @@ class StationCommodity extends \yii\db\ActiveRecord
             'buy_price' => 'Buy Price',
             'sell_price' => 'Sell Price',
             'demand' => 'Demand',
-            'collected_At' => 'Collected  At',
+            'collected_at' => 'Collected  At',
             'update_count' => 'Update Count',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -77,7 +78,7 @@ class StationCommodity extends \yii\db\ActiveRecord
      */
     public function getCommodity()
     {
-        return $this->hasOne(Commodities::className(), ['id' => 'commodity_id']);
+        return $this->hasOne(Commodity::className(), ['id' => 'commodity_id']);
     }
 
     /**
@@ -85,6 +86,6 @@ class StationCommodity extends \yii\db\ActiveRecord
      */
     public function getStation()
     {
-        return $this->hasOne(Stations::className(), ['id' => 'station_id']);
+        return $this->hasOne(Station::className(), ['id' => 'station_id']);
     }
 }

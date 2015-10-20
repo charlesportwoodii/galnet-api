@@ -309,7 +309,7 @@ class ImportController extends \yii\console\Controller
 			}
 
 			$this->stdOut('Importing station: ');
-			$this->stdOut("{$obj[0]['name']}\n", Console::BOLD);
+			$this->stdOut("{$obj[0]['name']} :: {$obj[0]['id']}\n", Console::BOLD);
 
 			// Update the stations listing
 			foreach ($obj[0] as $name=>$value)
@@ -338,17 +338,8 @@ class ImportController extends \yii\console\Controller
 				$model->save();
 			}
 
-			$this->stdOut("    - Commodities\n");
-			$this->importStationCommodity($obj[0], 'commodities', new StationCommodity, $listings);
-
-			$this->stdOut("    - Import Commodities\n");
-			$this->importStationCommodity($obj[0], 'import_commodities', new StationImportCommodity, $import_commodities);
-
-			$this->stdOut("    - Export Commodities\n");
-			$this->importStationCommodity($obj[0], 'export_commodities', new StationExportCommodity, $export_commodities);
-
-			$this->stdOut("    - ProhibitedCommodities\n");
-			$this->importStationCommodity($obj[0], 'prohibited_commodities', new StationProhibitedCommodity, $prohibited_commodities);
+			foreach (['listings', 'import_commodities', 'export_commodities', 'prohibited_commodities'] as $k)
+				$this->importStationCommodity($obj[0], $k, new StationCommodity, $$k);
 		};
 	}
 
@@ -399,24 +390,39 @@ class ImportController extends \yii\console\Controller
 	 */
 	private function importStationCommodity($station, $class, $model, $data)
 	{
-		Yii::$app->db->createCommand('DELETE FROM station_' . $class . ' WHERE station_id = :station_id')
+		Yii::$app->db->createCommand('DELETE FROM station_commodities WHERE station_id = :station_id AND type=:type')
 		   ->bindValue(':station_id', $station['id'])
+		   ->bindValue(':type', $class)
 		   ->execute();
 
-		foreach ($data as $commodity)
+		$i = 0;
+		foreach ($data as $d)
 		{
-			$commodity = Commodity::find()->where(['name' => $commodity])->one();
+			if ($class === 'listings')
+				$commodity = Commodity::find()->where(['id' => $d['commodity_id']])->one();
+			else
+				$commodity = Commodity::find()->where(['name' => $d])->one();
+
 			if ($commodity !== NULL)
 			{
 				$model->attributes = [
 					'station_id' 	=> $station['id'],
-					'commodity_id'	=> $commodity->id
+					'commodity_id'	=> $commodity->id,
+					'type'			=> (string)$class,
+					'supply'		=> isset($d['supply']) ? $d['supply'] : null,
+					'buy_price'		=> isset($d['buy_price']) ? $d['buy_price'] : null,
+					'sell_price'	=> isset($d['sell_price']) ? $d['sell_price'] : null,
+					'demand'		=> isset($d['demand']) ? $d['demand'] : null
 				];
 
-				return $model->save();
+				if ($model->save())
+					$i++;
 			}
 			else
 				Yii::warning("{$station['id']}::{$station['name']} - Couldn't find commodity {$commodity}", __METHOD__);
 		}
+
+		$inflected = \yii\helpers\Inflector::humanize($class);
+		$this->stdOut("    - $inflected :: {$i}\n");
 	}
 }
