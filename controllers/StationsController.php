@@ -48,7 +48,7 @@ class StationsController extends \yii\rest\Controller
 		$params['Station'] = Yii::$app->request->get();
 		$query = $model->search($params);
 		
-		return ResponseBuilder::build($query, 'stations', Yii::$app->request->get('sort', 'name asc'));
+		return ResponseBuilder::build($query, 'stations', Yii::$app->request->get('sort', 'name'), Yii::$app->request->get('order', 'asc'));
 	}
 
 	/**
@@ -62,6 +62,6 @@ class StationsController extends \yii\rest\Controller
 			throw new HttpException(400, 'Missing ID parameter');
 
 		$query = Station::find()->where(['id' => $id]);
-		return ResponseBuilder::build($query, 'stations', 'id asc');
+		return ResponseBuilder::build($query, 'stations', Yii::$app->request->get('sort', 'name'), Yii::$app->request->get('order', 'asc'));
 	}
 }

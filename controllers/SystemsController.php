@@ -48,7 +48,7 @@ class SystemsController extends \yii\rest\Controller
 		$params['System'] = Yii::$app->request->get();
 		$query = $model->search($params);
 		
-		return ResponseBuilder::build($query, 'systems', Yii::$app->request->get('sort', 'name asc'));
+		return ResponseBuilder::build($query, 'systems', Yii::$app->request->get('sort', 'name'), Yii::$app->request->get('order', 'asc'));
 	}
 
 	/**
@@ -62,6 +62,6 @@ class SystemsController extends \yii\rest\Controller
 			throw new HttpException(400, 'Missing ID parameter');
 
 		$query = System::find()->where(['id' => $id]);
-		return ResponseBuilder::build($query, 'systems', 'id asc');
+		return ResponseBuilder::build($query, 'systems', Yii::$app->request->get('sort', 'name'), Yii::$app->request->get('order', 'asc'));
 	}
 }

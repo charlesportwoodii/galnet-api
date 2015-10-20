@@ -65,7 +65,7 @@ class CommoditiesController extends \yii\rest\Controller
 		if (Yii::$app->request->get('name', false))
 			$query->andWhere(['name' => Inflector::humanize(Yii::$app->request->get('name', 'nothing'))]);
 
-		return ResponseBuilder::build($query, 'commodities', Yii::$app->request->get('sort', 'id asc'));
+		return ResponseBuilder::build($query, 'commodities', Yii::$app->request->get('sort', 'id'), Yii::$app->request->get('order', 'asc'));
 	}
 
 	/**
@@ -79,6 +79,6 @@ class CommoditiesController extends \yii\rest\Controller
 			throw new HttpException(400, 'Missing ID parameter');
 
 		$query = Commodity::find()->where(['id' => $id]);
-		return ResponseBuilder::build($query, 'commodities+stations', 'id asc');
+		return ResponseBuilder::build($query, 'commodities+stations', Yii::$app->request->get('sort', 'name'), Yii::$app->request->get('order', 'asc'));
 	}
 }

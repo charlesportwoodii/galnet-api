@@ -16,7 +16,7 @@ class ResponseBuilder
 	 * @param array $response
 	 * @return array
 	 */
-	public static function build(yii\db\ActiveQuery $query, $name, $order, $response=[])
+	public static function build(yii\db\ActiveQuery $query, $name, $sort='id', $order='asc', $response=[])
 	{
 		$namedData = explode('+', $name);
 		$name = $namedData[0];
@@ -26,18 +26,10 @@ class ResponseBuilder
 		$count = $countQuery->count();
 		$pages = new Pagination(['totalCount' => $count]);
 
-		// Re-Add the order by so it doesn't affect the COUNT query
-		$order = explode(' ', $order);
-		if (!isset($order[1]))
-			$order[1] = 'asc';
-
-		if (!in_array($order[0], array_keys(Yii::$app->db->getTableSchema($name)->columns)))
+		if (!in_array($sort, array_keys(Yii::$app->db->getTableSchema($name)->columns)))
 			throw new HttpException(400, 'Invalid sort paramter');
 
-		if (!in_array($order[1], ['asc', 'desc']))
-			$order[1] = 'asc';
-
-		$query->orderBy($order[0] . ' ' . $order[1]);
+		$query->orderBy($sort . ' ' . $order);
 
 		$models = $query->offset($pages->offset)
 			->limit($pages->limit)

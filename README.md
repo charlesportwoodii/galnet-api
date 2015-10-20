@@ -241,8 +241,8 @@ GET /commodity/1
 System information can be queried for by searching against the ```/systems``` endpoint. This endpoint supports pagination via the ```page``` parameter. Systems by default are sorted in alphanumeric order by their name, but this can be changed by specifying the ```sort``` paramtered with the parameter name and the order ```asc|desc```.
 
 ```
-GET /systems?sort=id asc
-GET /systems?sort=name desc
+GET /systems?sort=id&order=asc
+GET /systems?sort=name&orderdesc
 ```
 
 This endpoint also supports direct searching against the following properties
@@ -345,8 +345,8 @@ GET /systems/100
 Information about a stations can be retrieved via the ```/stations``` endpoint, and information for a particular station can be found at ```/stations/<id:\d+>```. Stations by default are sorted in alphanumeric order, but this can be changed by specifying the ```sort``` paramtered with the parameter name and the order ```asc|desc```.
 
 ```
-GET /stations
-GET /stations/937
+GET /stations?sort=name&order=desc
+GET /stations/937?sort=name&order=asc
 ```
 
 Output for these endpoints will be displayed in the following format.
