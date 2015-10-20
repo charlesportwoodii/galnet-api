@@ -24,10 +24,14 @@ Originally intended to supply Galnet News data in a simple JSON API. GNA has bee
 - Commodities
 - Systems
 - Stations
+
+The following additional features are not yet implemented, but are planned
+
 - PowerPlay (rankings, controlled systems, etc...)
 - Community Goals
 - Ships
-- Ship components * modules
+- Ship components
+- Ship modules
 
 ## How to use GNA?
 
