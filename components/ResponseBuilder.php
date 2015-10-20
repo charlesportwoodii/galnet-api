@@ -83,17 +83,25 @@ class ResponseBuilder
 			$response['stations'] = count($model->stations);
 		else
 		{
-			$stations = [];
-			foreach($model->stations as $s)
+			$stations = Yii::$app->cache->get('Commodities::Stations::' . $model->id);
+			if ($stations === false)
 			{
-				$stations[] = [
-					'station_id' => $s->station_id,
-					'system_id' => $s->station->system->id
-				];
+				$stations = [];
+				foreach($model->stations as $s)
+				{
+					$stations[] = [
+						'station_id' => $s->station_id,
+						'system_id' => $s->station->system->id
+					];
+				}
+
+				// Cache Commodities::Stations data for 24 hours to reduce server load
+				Yii::$app->cache->set('Commodities::Stations::' . $model->id, $stations, 43200);
 			}
 
 			$response['stations'] = $stations;
 		}
+
 		return $response;
 	}
 
@@ -140,16 +148,26 @@ class ResponseBuilder
 		foreach ($model->stationEconomies as $m)
 			$economies[] = $m->name;
 
-		$commodities = $model->commodities;
-		return \yii\helpers\ArrayHelper::merge($attributes, [
-			'system' 		=> $model->system,
-			'economies' 	=> $economies,
-			'commodities' 	=> [
+		$allCommodities = Yii::$app->cache->get('Stations::Commodities::' . $model->id);
+
+		if ($allCommodities === false)
+		{
+			$commodities = $model->commodities;
+			$allCommodities = [
 				'listings' 		=> self::getCommoditiesClean($commodities, 'listings'),
 				'imports' 		=> self::getCommoditiesClean($commodities, 'import_commodities'),
 				'exports' 		=> self::getCommoditiesClean($commodities, 'export_commodities'),
 				'prohibitied' 	=> self::getCommoditiesClean($commodities, 'prohibited_commodities')
-			],
+			];
+
+			// Cache station commodity information for 12 hours to reduce server load
+			Yii::$app->cache->set('Stations::Commodities::' . $model->id, $allCommodities, 43200);
+		}
+
+		return \yii\helpers\ArrayHelper::merge($attributes, [
+			'system' 		=> $model->system,
+			'economies' 	=> $economies,
+			'commodities' 	=> $allCommodities,
 			'neighboring_stations' => $neighbors
 		]);
 	}
