@@ -18,6 +18,10 @@ class ResponseBuilder
 	 */
 	public static function build(yii\db\ActiveQuery $query, $name, $order, $response=[])
 	{
+		$namedData = explode('+', $name);
+		$name = $namedData[0];
+		$with = [];
+		
 		$countQuery = clone $query;
 		$count = $countQuery->count();
 		$pages = new Pagination(['totalCount' => $count]);
@@ -54,8 +58,11 @@ class ResponseBuilder
 		$headers->set('X-Pagination-Total-Pages', $pages->pageCount);
 		$headers->set('X-Pagination-Total-Entries', $count);
 
+		if (count($namedData) > 1)
+			$with = explode(',', $namedData[1]);
+
 		foreach ($models as $model)
-			$response[] = self::$name($model);
+			$response[] = self::$name($model, $with);
 			
 		return $response;
 	}
@@ -65,20 +72,37 @@ class ResponseBuilder
 	 * @param app\model\Commodities $model
 	 * @return array
 	 */
-	public static function commodities($model=NULL)
+	public static function commodities($model=NULL, $with=[])
 	{
 		if ($model === NULL)
 			throw new \yii\base\Exception('Missing model data');
 		
-		return [
+		$response = [
 			'id'			=> $model->id,
 			'name'			=> $model->name,
 			'average_price' => $model->average_price,
 			'category' 		=> [
 				'id'   => $model->category->id,
 				'name' => $model->category->name
-			]
+			]			
 		];
+
+		if (!in_array('stations', $with))
+			$response['stations'] = count($model->stations);
+		else
+		{
+			$stations = [];
+			foreach($model->stations as $s)
+			{
+				$stations[] = [
+					'station_id' => $s->station_id,
+					'system_id' => $s->station->system->id
+				];
+			}
+
+			$response['stations'] = $stations;
+		}
+		return $response;
 	}
 
 	/**
@@ -86,7 +110,7 @@ class ResponseBuilder
 	 * @param app\model\System $model
 	 * @return array
 	 */
-	public static function systems($model=NULL)
+	public static function systems($model=NULL, $with=[])
 	{
 		if ($model === NULL)
 			throw new \yii\base\Exception('Missing model data');
@@ -105,7 +129,7 @@ class ResponseBuilder
 	 * @param app\model\Station $model
 	 * @return array
 	 */
-	public static function stations($model=NULL)
+	public static function stations($model=NULL, $with=[])
 	{
 		if ($model === NULL)
 			throw new \yii\base\Exception('Missing model data');
@@ -134,7 +158,7 @@ class ResponseBuilder
 				'exports' 		=> self::getCommoditiesClean($commodities, 'export_commodities'),
 				'prohibitied' 	=> self::getCommoditiesClean($commodities, 'prohibited_commodities')
 			],
-			'neighbors' => $neighbors
+			'neighboring_stations' => $neighbors
 		]);
 	}
 
@@ -174,7 +198,7 @@ class ResponseBuilder
 	 * @param app\model\News $model
 	 * @return array
 	 */
-	public static function news($model=NULL)
+	public static function news($model=NULL, $with=[])
 	{
 		if ($model === NULL)
 			throw new \yii\base\Exception('Missing model data');

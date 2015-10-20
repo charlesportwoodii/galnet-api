@@ -79,6 +79,6 @@ class CommoditiesController extends \yii\rest\Controller
 			throw new HttpException(400, 'Missing ID parameter');
 
 		$query = Commodity::find()->where(['id' => $id]);
-		return ResponseBuilder::build($query, 'commodities', 'id asc');
+		return ResponseBuilder::build($query, 'commodities+stations', 'id asc');
 	}
 }

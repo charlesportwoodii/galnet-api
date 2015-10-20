@@ -114,7 +114,8 @@ GET /commodities?page=3
 			"category": {
 				"id": 16,
 				"name": "Salvage"
-			}
+			},
+			"stations": []
 		},
 			{
 			"id": 99,
@@ -123,7 +124,13 @@ GET /commodities?page=3
 			"category": {
 				"id": 2,
 				"name": "Consumer Items"
-			}
+			},
+			"stations": [
+				{
+					"system_id": "",
+					"station_id": ""
+				}
+			]
 		},
 		{...}
 	]
@@ -246,6 +253,8 @@ GET /systems?population=100000&populationMap=>=
 ```
 
 Feel free to mix and match multiple query parameters for complex searches. Data from this endpoint will list information for that system, and all stations currently in the system.
+
+##### Examples
 
 ```
 {
