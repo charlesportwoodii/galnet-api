@@ -199,6 +199,107 @@ GET /commodities?category=Salvage
 }
 ```
 
+#### Systems
+
+System information can be queried for by searching against the ```/systems``` endpoint. This endpoint supports pagination via the ```page``` parameter. Results can be sorted by specifying the ```sort``` parameter with the property name you wish to specify against. The sort order can be adjusted by specifying ```asc``` or ```desc``` as part of the sort GET parameter.
+
+By default systems will be sorted by name.
+
+```
+GET /systems?sort=id asc
+GET /systems?sort=name desc
+```
+
+This endpoint also supports direct searching against the following properties
+
+```
+state
+security
+needs_permit // use 0 or 1 for boolean properties
+```
+
+```
+GET /systems?id=105
+GET /systems?needs_permit=1&state=Boom
+```
+
+Additionally, the following properties support searching.
+
+```
+name
+faction
+government
+allegiance
+primary_economy
+```
+
+```
+GET /systems?name=10
+GET /systems?name=10 Tauri
+GET /systems?name=CD-51&allegiance=Empire
+```
+
+Finally, you can also sort by population by specifying the population directly, by specifying a ```populationMap``` parameter, which will filter systems with a population using one of the valid query parmeters```>=, >, =, <, <=```.
+
+```
+GET /systems?population=100000&populationMap=>=
+```
+
+Feel free to mix and match multiple query parameters for complex searches. Data from this endpoint will list information for that system, and all stations currently in the system.
+
+```
+{
+	"data": [
+		{
+			"id": 3036,
+			"name": "CD-51 102",
+			"x": 40.71875,
+			"y": -124.15625,
+			"z": 36.78125,
+			"faction": "CD-51 102 Company",
+			"population": 10672279,
+			"government": "Corporate",
+			"allegiance": "Empire",
+			"state": null,
+			"security": "High",
+			"primary_economy": "High Tech",
+			"needs_permit": false,
+			"created_at": null,
+			"updated_at": null,
+			"stations": [
+				{
+					"id": 443,
+					"name": "McDermott Enterprise",
+					"system_id": 3036,
+					"max_landing_pad_size": "L",
+					"distance_to_star": 2602,
+					"faction": "CD-51 102 Company",
+					"government": "Dictatorship",
+					"allegiance": "Empire",
+					"state": "None",
+					"type": "Coriolis Starport",
+					"has_blackmarket": false,
+					"has_commodities": true,
+					"has_refuel": true,
+					"has_repair": true,
+					"has_rearm": true,
+					"has_outfitting": true,
+					"has_shipyard": true,
+					"created_at": 1445294619,
+					"updated_at": 1445294619
+				}
+			]
+		},
+		{...}
+	]
+}
+```
+
+To see information for a specific system, request that system directly using it's ```id```
+
+```
+GET /systems/100
+```
 ----------------------
 
 ## Developing
@@ -269,6 +370,15 @@ Commodity information is fetched from EDDB's data archives. As this data only up
 ./yii import commodities
 ```
 
+
+#### Importing EDDB Systems & Stations
+
+System and station information can be imported by running the following command. Note that this process could take a long time depending upon your system
+
+```
+./yii import/systems
+./yii import/stations
+```
 ### Contributing
 
 There are several ways you can contribute to the development of GNNA:

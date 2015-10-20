@@ -91,7 +91,6 @@ class ResponseBuilder
 		if ($model === NULL)
 			throw new \yii\base\Exception('Missing model data');
 		
-
 		return \yii\helpers\ArrayHelper::merge($model->attributes, [
 			'stations' => $model->stations
 		]);

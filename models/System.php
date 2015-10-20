@@ -40,7 +40,7 @@ class System extends \yii\db\ActiveRecord
     {
         return [
             [['x', 'y', 'z'], 'number'],
-            [['population', 'created_at', 'updated_at'], 'integer'],
+            [['population', 'created_at', 'updated_at', 'id'], 'integer'],
             [['needs_permit'], 'boolean'],
             [['name', 'faction', 'government', 'allegiance', 'state'], 'string', 'max' => 255],
             [['security'], 'string', 'max' => 50],
@@ -78,5 +78,41 @@ class System extends \yii\db\ActiveRecord
     public function getStations()
     {
         return $this->hasMany(Station::className(), ['system_id' => 'id']);
+    }
+
+    /**
+     * Search method for filtering by multiple attributes
+     * @param array $params
+     * @return yii\db\Query
+     */
+    public function search($params=[])
+    {
+        unset($params['sort']);
+        $query = self::find();
+
+        if (!($this->load($params) && $this->validate()))
+            throw new \yii\web\HttpException(400, 'Invalid request parameters');
+
+        $query->andFilterWhere([
+            'id'                => $this->id,
+            'state'             => $this->state,
+            'security'          => $this->security,
+            'needs_permit'      => $this->needs_permit
+        ]);
+
+        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'faction', $this->faction]);
+        $query->andFilterWhere(['like', 'government', $this->government]);
+        $query->andFilterWhere(['like', 'allegiance', $this->allegiance]);
+        $query->andFilterWhere(['like', 'primary_economy', $this->primary_economy]);
+
+        // Add in soem additional filtering
+        if (!isset($params['System']['populationMap']))
+            $params['System']['populationMap'] = '=';
+
+        if (isset($params['System']['population']) && in_array($params['System']['populationMap'], ['>', '>=', '=', '<', '<=']))
+            $query->andFilterWhere([$params['System']['populationMap'], 'population', $this->population]);
+
+        return $query;
     }
 }

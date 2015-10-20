@@ -44,32 +44,11 @@ class SystemsController extends \yii\rest\Controller
 	 */
 	public function actionIndex()
 	{
-		$allowedSearchFilters = [
-			'name' 				=> NULL,
-			'faction' 			=> NULL,
-			'government' 		=> NULL,
-			'allegiance' 		=> NULL,
-			'primary_economy' 	=> NULL,
-			'security' 			=> NULL,
-			'state' 			=> NULL,
-			'station' 			=> NULL
-		];
-
-		foreach (Yii::$app->request->get() as $k=>$v)
-		{
-			if (array_key_exists($k, $allowedSearchFilters))
-				$allowedSearchFilters[$k] = $v;
-		}
-
-		$query = System::find();
-
-		foreach ($allowedSearchFilters as $k=>$v)
-		{
-			if ($allowedSearchFilters[$k] != NULL)
-				$query->andWhere([$k => $v]);
-		}
+		$model = new System;
+		$params['System'] = Yii::$app->request->get();
+		$query = $model->search($params);
 		
-		return ResponseBuilder::build($query, 'systems', Yii::$app->request->get('sort', 'id asc'));
+		return ResponseBuilder::build($query, 'systems', Yii::$app->request->get('sort', 'name asc'));
 	}
 
 	/**
