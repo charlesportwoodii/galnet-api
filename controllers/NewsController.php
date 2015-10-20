@@ -50,7 +50,7 @@ class NewsController extends \yii\web\Controller
 		if (Yii::$app->request->get('date', NULL) !== NULL)
 			$query->andWhere(['published_at_native' => strtotime(Yii::$app->request->get('date', NULL))]);
 
-		return ResponseBuilder::build($query, 'news', 'published_at_native desc');
+		return ResponseBuilder::build($query, 'news', 'published_at_native', 'desc');
 	}
 
 	/**
