@@ -91,8 +91,12 @@ class ResponseBuilder
 		if ($model === NULL)
 			throw new \yii\base\Exception('Missing model data');
 		
+		$stations = $model->stations;
+		foreach ($stations as $k=>$v)
+			unset($stations[$k]['system_id']);
+		
 		return \yii\helpers\ArrayHelper::merge($model->attributes, [
-			'stations' => $model->stations
+			'stations' => $stations
 		]);
 	}
 
