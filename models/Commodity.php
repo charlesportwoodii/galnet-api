@@ -21,7 +21,6 @@ use Yii;
  */
 class Commodity extends \yii\db\ActiveRecord
 {
-
     /**
      * @inheritdoc
      */
@@ -72,5 +71,13 @@ class Commodity extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(CommodityCategory::className(), ['id' => 'category_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStations()
+    {
+        return $this->hasMany(StationCommodity::className(), ['commodity_id' => 'id']);
     }
 }

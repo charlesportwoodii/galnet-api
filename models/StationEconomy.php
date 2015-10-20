@@ -6,16 +6,16 @@ use yii\behaviors\TimestampBehavior;
 use Yii;
 
 /**
- * This is the model class for table "commodities_categories".
+ * This is the model class for table "station_economies".
  *
- * @property integer $id
+ * @property integer $station_id
  * @property string $name
  * @property integer $created_at
  * @property integer $updated_at
  *
- * @property Commodities[] $commodities
+ * @property Stations $station
  */
-class CommodityCategory extends \yii\db\ActiveRecord
+class StationEconomy extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -26,13 +26,13 @@ class CommodityCategory extends \yii\db\ActiveRecord
             TimestampBehavior::className(),
         ];
     }
-
+    
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'commodities_categories';
+        return 'station_economies';
     }
 
     /**
@@ -41,8 +41,9 @@ class CommodityCategory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at'], 'integer'],
-            [['name'], 'string', 'max' => 255]
+            [['station_id', 'created_at', 'updated_at'], 'integer'],
+            [['name'], 'string', 'max' => 255],
+            [['station_id', 'name'], 'unique', 'targetAttribute' => ['station_id', 'name'], 'message' => 'The combination of Station ID and Name has already been taken.']
         ];
     }
 
@@ -52,7 +53,7 @@ class CommodityCategory extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'station_id' => 'Station ID',
             'name' => 'Name',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -62,8 +63,8 @@ class CommodityCategory extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCommodities()
+    public function getStation()
     {
-        return $this->hasMany(Commodity::className(), ['category_id' => 'id']);
+        return $this->hasOne(Station::className(), ['id' => 'station_id']);
     }
 }

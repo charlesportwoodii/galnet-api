@@ -24,10 +24,14 @@ Originally intended to supply Galnet News data in a simple JSON API. GNA has bee
 - Commodities
 - Systems
 - Stations
+
+The following additional features are not yet implemented, but are planned
+
 - PowerPlay (rankings, controlled systems, etc...)
 - Community Goals
 - Ships
-- Ship components * modules
+- Ship components
+- Ship modules
 
 ## How to use GNA?
 
@@ -114,7 +118,8 @@ GET /commodities?page=3
 			"category": {
 				"id": 16,
 				"name": "Salvage"
-			}
+			},
+			"stations": 5
 		},
 			{
 			"id": 99,
@@ -123,7 +128,8 @@ GET /commodities?page=3
 			"category": {
 				"id": 2,
 				"name": "Consumer Items"
-			}
+			},
+			"stations": 421
 		},
 		{...}
 	]
@@ -146,7 +152,8 @@ GET /commodities?name=Trade Data
 			"category": {
 				"id": 16,
 				"name": "Salvage"
-			}
+			},
+			"stations": 5
 		}
 	]
 }
@@ -166,7 +173,8 @@ GET /commodities?category=Salvage
 			"category": {
 				"id": 16,
 				"name": "Salvage"
-			}
+			},
+			"stations": 5
 		},
 		{
 			"id": 98,
@@ -175,7 +183,8 @@ GET /commodities?category=Salvage
 			"category": {
 				"id": 16,
 				"name": "Salvage"
-			}
+			},
+			"stations": 5
 		},
 		{
 			"id": 96,
@@ -184,7 +193,8 @@ GET /commodities?category=Salvage
 			"category": {
 				"id": 16,
 				"name": "Salvage"
-			}
+			},
+			"stations": 5
 		},
 		{
 			"id": 95,
@@ -193,11 +203,281 @@ GET /commodities?category=Salvage
 			"category": {
 				"id": 16,
 				"name": "Salvage"
-			}
+			},
+			"stations": 5
 		}
 	]
 }
 ```
+
+Additionally, if you query a commodity directly by it's ```ID```, it will provide a full list of stations and systems that commodity can be found in.
+
+```
+GET /commodity/1
+```
+
+```
+{
+	"data": [{
+		"id": 1,
+		"name": "Explosives",
+		"average_price": 271,
+		"category": {
+			"id": 1,
+			"name": "Chemicals"
+		},
+		"stations": [
+			{
+				"station_id": 946,
+				"system_id": 9157
+			}
+			]
+	}]
+}
+```
+
+#### Systems
+
+System information can be queried for by searching against the ```/systems``` endpoint. This endpoint supports pagination via the ```page``` parameter. Systems by default are sorted in alphanumeric order by their name, but this can be changed by specifying the ```sort``` paramtered with the parameter name and the order ```asc|desc```.
+
+```
+GET /systems?sort=id asc
+GET /systems?sort=name desc
+```
+
+This endpoint also supports direct searching against the following properties
+
+```
+government
+allegiance
+state
+security
+needs_permit // use 0 or 1 for boolean properties
+```
+
+```
+GET /systems?id=105
+GET /systems?needs_permit=1&state=Boom
+```
+
+Additionally, the following properties support searching.
+
+```
+name
+faction
+primary_economy
+```
+
+```
+GET /systems?name=10
+GET /systems?name=10 Tauri
+GET /systems?name=CD-51&allegiance=Empire
+```
+
+Finally, you can also sort by population by specifying the population directly, by specifying a ```populationMap``` parameter, which will filter systems with a population using one of the valid query parmeters```>=, >, =, <, <=```.
+
+```
+GET /systems?population=100000&populationMap=>=
+```
+
+Feel free to mix and match multiple query parameters for complex searches. Data from this endpoint will list information for that system, and all stations currently in the system.
+
+##### Examples
+
+```
+{
+	"data": [
+		{
+			"id": 3036,
+			"name": "CD-51 102",
+			"x": 40.71875,
+			"y": -124.15625,
+			"z": 36.78125,
+			"faction": "CD-51 102 Company",
+			"population": 10672279,
+			"government": "Corporate",
+			"allegiance": "Empire",
+			"state": null,
+			"security": "High",
+			"primary_economy": "High Tech",
+			"needs_permit": false,
+			"created_at": null,
+			"updated_at": null,
+			"stations": [
+				{
+					"id": 443,
+					"name": "McDermott Enterprise",
+					"system_id": 3036,
+					"max_landing_pad_size": "L",
+					"distance_to_star": 2602,
+					"faction": "CD-51 102 Company",
+					"government": "Dictatorship",
+					"allegiance": "Empire",
+					"state": "None",
+					"type": "Coriolis Starport",
+					"has_blackmarket": false,
+					"has_commodities": true,
+					"has_refuel": true,
+					"has_repair": true,
+					"has_rearm": true,
+					"has_outfitting": true,
+					"has_shipyard": true,
+					"created_at": 1445294619,
+					"updated_at": 1445294619
+				}
+			]
+		},
+		{...}
+	]
+}
+```
+
+To see information for a specific system, request that system directly using it's ```id```
+
+```
+GET /systems/100
+```
+
+> Note: the systems endpoint does not show all information for a station. To view more information about a station, request that station directly
+
+#### Stations
+
+Information about a stations can be retrieved via the ```/stations``` endpoint, and information for a particular station can be found at ```/stations/<id:\d+>```. Stations by default are sorted in alphanumeric order, but this can be changed by specifying the ```sort``` paramtered with the parameter name and the order ```asc|desc```.
+
+```
+GET /stations
+GET /stations/937
+```
+
+Output for these endpoints will be displayed in the following format.
+
+```
+{
+    "data": [
+        {
+            "id": 937,
+            "name": "Aachen Town",
+            "max_landing_pad_size": "L",
+            "distance_to_star": 4746,
+            "faction": "Alioth Independents",
+            "government": "Democracy",
+            "allegiance": "Alliance",
+            "state": "None",
+            "type": "Coriolis Starport",
+            "has_blackmarket": true,
+            "has_commodities": true,
+            "has_refuel": true,
+            "has_repair": true,
+            "has_rearm": true,
+            "has_outfitting": true,
+            "has_shipyard": true,
+            "created_at": 1445363901,
+            "updated_at": 1445363901,
+            "system": {
+                "id": 718,
+                "name": "Alioth",
+                "x": -33.65625,
+                "y": 72.46875,
+                "z": -20.65625,
+                "faction": "Alioth Independents",
+                "population": 10000000000,
+                "government": "Democracy",
+                "allegiance": "Alliance",
+                "state": "Expansion",
+                "security": "High",
+                "primary_economy": "Service",
+                "needs_permit": true,
+                "created_at": null,
+                "updated_at": null
+            },
+            "economies": [
+                "Service"
+            ],
+            "commodities": {
+                "listings": [
+                    {
+                        "commodity_id": 83,
+                        "name": "Painite",
+                        "supply": 0,
+                        "demand": 63640,
+                        "buy_price": 0,
+                        "sell_price": 36038
+                    }
+                ],
+                "imports": [
+                    {
+                        "commodity_id": 46,
+                        "name": "Platinum"
+                    }
+                ],
+                "exports": [
+                    {
+                        "commodity_id": 75,
+                        "name": "Biowaste"
+                    }
+                ],
+                "prohibitied": [
+                    {
+                        "commodity_id": 82,
+                        "name": "Toxic Waste"
+                    }
+                ]
+            },
+            "neighboring_stations": [
+                {
+                    "id": 487,
+                    "name": "Irkutsk",
+                    "distance_to_star": 7783
+                }
+            ]
+        },
+        {...}
+    ]
+}
+```
+
+Like systems, stations can be searched against. The following properties will search against a direct match
+
+```
+id
+has_shipyard
+has_outfitting
+has_rearm
+has_repair
+has_refuel
+has_commodities
+type
+state
+max_landing_pad_size
+government
+allegiance
+```
+
+```
+GET /stations?allegiance=Empire
+GET /stations?allergiance=Federation&max_landing_pad_size=M
+```
+
+Additionally, the following properties can be searched against as partials
+
+```
+name
+faction
+```
+
+```
+GET /stations?name=Orbital
+GET /stations?name=Kaku Plant
+GET stations?faction=Kou Hua
+```
+
+Finally, you can also sort by star distance by specifying the distance directly, by specifying a ```starDistanceMap``` parameter, which will filter stations by their distance form their primary star using the following query parameters```>=, >, =, <, <=```.
+
+```
+GET /stations?distance_to_star=1233592&starDistanceMap=>=
+```
+
+> Kaku Plant...
 
 ----------------------
 
@@ -269,6 +549,15 @@ Commodity information is fetched from EDDB's data archives. As this data only up
 ./yii import commodities
 ```
 
+
+#### Importing EDDB Systems & Stations
+
+System and station information can be imported by running the following command. Note that this process could take a long time depending upon your system
+
+```
+./yii import/systems
+./yii import/stations
+```
 ### Contributing
 
 There are several ways you can contribute to the development of GNNA:
