@@ -105,6 +105,9 @@ class ImportController extends \yii\console\Controller
 		$bench = new \Ubench;
 		$result = $bench->run(function($file, $type) {
 			$this->importJsonData($file, $type);
+
+			// Flush the system kdTree point cache
+			System::getAllPoints(true);
 		}, $file, 'systems');
 		
 		$this->stdOut("Systems import completed\n");

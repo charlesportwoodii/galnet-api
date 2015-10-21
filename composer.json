@@ -35,7 +35,8 @@
         "salsify/json-streaming-parser": "v4.0",
         "devster/ubench": "~1.2.0",
         "soyuka/ObjectListener": "*",
-        "yiisoft/yii2-redis": "^2.0@dev"
+        "yiisoft/yii2-redis": "^2.0@dev",
+        "sandfox/kdtree": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

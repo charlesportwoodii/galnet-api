@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4afdae329d5545658f18113b3ad06985",
-    "content-hash": "26d7755c26a0a25ca2c49fe0101e1933",
+    "hash": "218455d74f58a401376a4d9b1752b8a6",
+    "content-hash": "5e9b35ad55e4de0f7e6a176732455fd3",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -513,6 +513,57 @@
                 "streaming"
             ],
             "time": "2015-03-07 19:39:22"
+        },
+        {
+            "name": "sandfox/kdtree",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sandfox/kdtree.git",
+                "reference": "ecca21a4b1f3bde18cb25e95a89cc10885d8b4de"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sandfox/kdtree/zipball/ecca21a4b1f3bde18cb25e95a89cc10885d8b4de",
+                "reference": "ecca21a4b1f3bde18cb25e95a89cc10885d8b4de",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Sandfox\\KDTree\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Butler",
+                    "email": "james.butler@sandfox.co.uk",
+                    "homepage": "http://sandfox.co.uk"
+                },
+                {
+                    "name": "Michael Fairhurst",
+                    "email": "michaelrfairhurst@gmail.com",
+                    "homepage": "http://wakelang.com"
+                }
+            ],
+            "description": "A slow and possibly buggy implementation of a kdtree in php",
+            "homepage": "https://github.com/sandfox/kdtree",
+            "keywords": [
+                "bsp",
+                "geospatial",
+                "kdtree"
+            ],
+            "time": "2014-06-02 16:45:10"
         },
         {
             "name": "soyuka/ObjectListener",
@@ -1066,7 +1117,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "yiisoft/yii2-redis": 20
+        "yiisoft/yii2-redis": 20,
+        "sandfox/kdtree": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

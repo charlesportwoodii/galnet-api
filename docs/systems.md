@@ -94,6 +94,8 @@ Feel free to mix and match multiple query parameters for complex searches. Data 
 }
 ```
 
+# System details by ID
+
 To see information for a specific system, request that system directly using it's ```id```
 
 ```
@@ -101,3 +103,20 @@ GET /systems/100
 ```
 
 > Note: the systems endpoint does not show all information for a station. To view more information about a station, request that station directly
+
+# Nearby Systems
+
+GNA can also show the closest 15 systems to a given system by it's ID by issuing the following request
+
+```
+GET /systems/<id>/nearby
+```
+
+## Examples
+
+```
+GET /systems/11065/nearby # Systems near Kou Hua
+GET /systems/16916/nearby # Systems near Sif
+```
+
+> Note, building the kdTree necessary to display this information is extremely time consuming. Consequently, nearby system data is data is only cleared on import.

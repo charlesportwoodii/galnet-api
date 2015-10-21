@@ -61,13 +61,17 @@ $config = [
                     'route' => 'systems/view'
                 ],
                 [
+                    'pattern' => '/systems/<id:\d+>/nearby',
+                    'route' => 'systems/nearby'
+                ],
+                [
                     'pattern' => '/stations',
                     'route' => 'stations/index'
                 ],
                 [
                     'pattern' => '/stations/<id:\d+>',
                     'route' => 'stations/view'
-                ],
+                ]
             ]
         ],
         'log' => [

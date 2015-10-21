@@ -64,4 +64,22 @@ class SystemsController extends \yii\rest\Controller
 		$query = System::find()->where(['id' => $id]);
 		return ResponseBuilder::build($query, 'systems', Yii::$app->request->get('sort', 'name'), Yii::$app->request->get('order', 'asc'));
 	}
+
+	public function actionNearby($id=NULL)
+	{
+		$response = [];
+
+		if ($id === NULL)
+			throw new HttpException(400, 'Missing ID parameter');
+
+		$model = System::find()->where(['id' => $id])->one();
+
+		if ($model === NULL)
+			throw new HttpException(400, 'Invalid system ID');
+
+		$response = $model->getNearbySystems();
+
+		$query = System::find()->where(['in', 'id', $response]);
+		return ResponseBuilder::build($query, 'systems');
+	}
 }
