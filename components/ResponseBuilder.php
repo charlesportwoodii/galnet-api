@@ -144,7 +144,6 @@ class ResponseBuilder
 			->andWhere('id !=' . $model->id)
 			->all();
 
-
 		foreach ($model->stationEconomies as $m)
 			$economies[] = $m->name;
 
@@ -165,10 +164,10 @@ class ResponseBuilder
 		}
 
 		return \yii\helpers\ArrayHelper::merge($attributes, [
-			'system' 		=> $model->system,
-			'economies' 	=> $economies,
-			'commodities' 	=> $allCommodities,
-			'neighboring_stations' => $neighbors
+			'system' 				=> $model->system,
+			'economies' 			=> $economies,
+			'commodities' 			=> $allCommodities,
+			'neighboring_stations' 	=> $neighbors
 		]);
 	}
 
@@ -189,6 +188,7 @@ class ResponseBuilder
 					'name'			=> $m->commodity->name,
 				];
 
+				// Apply listing data for regular station commodities
 				if ($type == 'listings')
 				{
 					$data['supply'] = $m->supply;
@@ -196,6 +196,7 @@ class ResponseBuilder
 					$data['buy_price'] = $m->buy_price;
 					$data['sell_price'] = $m->sell_price;
 				}
+
 				$response[] = $data;
 			}
 		}
