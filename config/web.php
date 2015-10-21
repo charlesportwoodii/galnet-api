@@ -1,5 +1,11 @@
 <?php
 
+$cache = [
+    'class' => 'yii\caching\FileCache',
+];
+if (file_exists(__DIR__ . '/cache.php'))
+    $cache = require __DIR__ . '/cache.php';
+
 $config = [
     'id' => 'galnet-api',
     'basePath' => dirname(__DIR__),
@@ -17,9 +23,7 @@ $config = [
 			'charset'        => 'UTF-8',
             'on beforeSend'  => ['app\components\ResponseEvent', 'beforeSend']
 		],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
+        'cache' => $cache,
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],

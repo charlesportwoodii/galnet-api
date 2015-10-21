@@ -30,3 +30,4 @@ public_html
 runtime/*
 config/db.php
 config/env.php
+config/cache.php
