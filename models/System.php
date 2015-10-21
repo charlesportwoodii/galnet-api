@@ -81,6 +81,94 @@ class System extends \yii\db\ActiveRecord
     }
 
     /**
+     * Returns a standardized X,Y,Z point
+     * @return Sandfox\KDTree\Point
+     */
+    public function getPoint()
+    {
+        $point = new \Sandfox\KDTree\Point;
+        $point[0] = $this->x;
+        $point[1] = $this->y;
+        $point[2] = $this->z;
+
+        return $point;
+    }
+
+    /**
+     * Retrieves all systems in ED known space as a KD Tree
+     * @return \KDTree\KDTree
+     */
+    public static function getAllPoints($resetCache=false)
+    {
+        ini_set('memory_limit', '512M');
+        $points = Yii::$app->cache->get('System::KDPoints');
+        if ($points === false || $resetCache === true)
+        {
+            $points = [];
+
+            foreach (System::find()->all() as $model)
+                $points[] = $model->getPoint();
+
+            Yii::$app->cache->set('System::KDPoints', $points);
+        }
+
+        $tree = Yii::$app->cache->get('System::KDPTree');
+        if ($tree === false || $resetCache === true)
+        {
+            $tree = \Sandfox\KDTree\KDTree::build($points);
+            Yii::$app->cache->set('System::KDPTree', serialize($tree));
+            return $tree;
+        }
+
+        return unserialize($tree);
+    }
+
+    /**
+     * Finds nearby systems
+     * @param integer $count
+     * @return array
+     */
+    public function getNearbySystems($count=16)
+    {
+        $response = Yii::$app->cache->get('Systems::Nearby::' . $this->id);
+        if ($response === false)
+        {
+            $tree = System::getAllPoints();
+            $results = new \Sandfox\KDTree\SearchResults($count);
+            \Sandfox\KDTree\KDTree::nearestNeighbour($tree, $this->getPoint(), $results);
+            
+            $nearestPoints = [];
+            $nearestModels = [];
+
+            while($results->valid())
+                $nearestPoints[] = $results->extract();
+
+            foreach ($nearestPoints as $point)
+            {
+                $point = $point['data']->getPoint();
+
+                $nearestModels[] = self::find()->select('id')->where([
+                    'x' => $point->getCoordinates()[0],
+                    'y' => $point->getCoordinates()[1],
+                    'z' => $point->getCoordinates()[2]
+                ])->one();
+            }
+
+            foreach ($nearestModels as $m)
+                $response[] = $m['id'];
+
+            $response = array_reverse($response);
+
+            unset($response[0]);
+            reset($response);
+
+            Yii::$app->cache->set('Systems::Nearby::' . $this->id, $response, 43200);
+        }
+
+        return $response;
+    }
+
+    /**
      * Search method for filtering by multiple attributes
      * @param array $params
      * @return yii\db\Query

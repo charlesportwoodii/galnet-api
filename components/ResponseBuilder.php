@@ -4,6 +4,8 @@ namespace app\components;
 
 use app\models\News;
 
+use app\models\System;
+
 use yii\data\Pagination;
 use yii\web\HttpException;
 use Yii;
