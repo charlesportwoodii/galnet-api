@@ -70,10 +70,10 @@ class ResponseBuilder
 			throw new \yii\base\Exception('Missing model data');
 		
 		$response = [
-			'id'			=> $model->id,
-			'name'			=> $model->name,
+			'id'		=> $model->id,
+			'name'		=> $model->name,
 			'average_price' => $model->average_price,
-			'category' 		=> [
+			'category' 	=> [
 				'id'   => $model->category->id,
 				'name' => $model->category->name
 			]			
@@ -153,9 +153,9 @@ class ResponseBuilder
 		{
 			$commodities = $model->commodities;
 			$allCommodities = [
-				'listings' 		=> self::getCommoditiesClean($commodities, 'listings'),
-				'imports' 		=> self::getCommoditiesClean($commodities, 'import_commodities'),
-				'exports' 		=> self::getCommoditiesClean($commodities, 'export_commodities'),
+				'listings' 	=> self::getCommoditiesClean($commodities, 'listings'),
+				'imports' 	=> self::getCommoditiesClean($commodities, 'import_commodities'),
+				'exports' 	=> self::getCommoditiesClean($commodities, 'export_commodities'),
 				'prohibitied' 	=> self::getCommoditiesClean($commodities, 'prohibited_commodities')
 			];
 
@@ -215,12 +215,12 @@ class ResponseBuilder
 			throw new \yii\base\Exception('Missing model data');
 		
 		return [
-			'uid' 						=> $model->uid,
-			'tite' 						=> $model->title,
-			'content' 					=> $model->content,
-			'published' 				=> $model->published_at,
+			'uid' 				=> $model->uid,
+			'title' 			=> $model->title,
+			'content' 			=> $model->content,
+			'published' 			=> $model->published_at,
 			'galnet_publication_time' 	=> $model->published_at_native,
-			'url' 						=> Yii::$app->params['galnet']['url'] . 'galnet/uid/' . $model->uid
+			'url' 				=> Yii::$app->params['galnet']['url'] . 'galnet/uid/' . $model->uid
 		];
 	}
 }
