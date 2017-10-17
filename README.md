@@ -2,8 +2,6 @@
 
 _Your galaxy, in JSON_
 
-[https://www.galnet.news](https://www.galnet.news)
-
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/charlesportwoodii/galnet-api.svg?style=flat-square)](https://scrutinizer-ci.com/g/charlesportwoodii/galnet-api/)
 [![Downloads](https://img.shields.io/packagist/dt/charlesportwoodii/galnet-api.svg?style=flat-square)](https://packagist.org/packages/charlesportwoodii/galnet-api)
 [![Gittip](https://img.shields.io/gittip/charlesportwoodii.svg?style=flat-square "Gittip")](https://www.gittip.com/charlesportwoodii/)
