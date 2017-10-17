@@ -14,37 +14,13 @@ For licensing information check the [LICENSE.md](LICENSE.md) file.
 
 ----------------------
 
+> galnet.news now redirects here. The free JSON API will no longer be made available. You are free to run your own instance of `galnet-api`. On Oct 16, 2018 I will release `galnet.news` from my current registrar. Please update your API endpoints before that time.
+
 ## What is GNA
 
-GNA is your comprehensive API endpoint for anything Elite Dangerous.
-
-Originally intended to supply Galnet News data in a simple JSON API. GNA has been enhanced to pull information from multiple resources to provide a detailed JSON API for multiple resources including:
-
-- Galnet News
-- Commodities
-- Systems
-- Stations
-
-The following additional features are not yet implemented, but are planned
-
-- PowerPlay (rankings, controlled systems, etc...)
-- Community Goals
-- Ships
-- Ship components
-- Ship modules
-
-
-## What information can I get with GNA?
-
-GNA sources data from multiple sources (EDDB, INARA, Galnet Community News). Listed below is all the information you can currently retrieve through GNA.
+GNA is your comprehensive API endpoint for Galnet News articles.
 
 ## How to use GNA?
-
-Be sure to reference the [docs/](docs/) folder for more information about each API endpoint.
-
-Want to use GNA without setting up your own server? You can fetch data from [https://www.galnet.news](https://www.galnet.news).
-
-> Note: Current data and usage is available for free, but hosting is not :(. If you want to donate to keep GNA up and free please contact me directly. Additionally, if you plan on doing massive data analysis, consider running GNA on your own servers.
 
 Be sure to reference the [docs/](docs/) folder for more information about each API endpoint.
 
@@ -52,7 +28,7 @@ Be sure to reference the [docs/](docs/) folder for more information about each A
 
 ### Contributing
 
-There are several ways you can contribute to the development of GNNA:
+There are several ways you can contribute to the development of GNA:
 
 - Submit a PR with a new feature
 - Create a detailed issue
